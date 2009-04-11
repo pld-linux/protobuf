@@ -13,6 +13,7 @@ Group:		Libraries
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	37e6e4d63434672c70bd977be9c372cb
 URL:		http://code.google.com/p/protobuf/
+BuildRequires:	libstdc++-devel
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -57,6 +58,7 @@ Summary:	Header files for protobuf libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek protobuf
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	libstdc++-devel
 
 %description devel
 Header files for protobuf libraries.
