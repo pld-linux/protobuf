@@ -29,7 +29,17 @@ programs that are compiled against the "old" format.
 Google uses Protocol Buffers for almost all of its internal RPC
 protocols and file formats. 
 
-#%description -l pl.UTF-8
+%description -l pl.UTF-8
+Bufory protokołowe to elastyczny, wydajny i zautomatyzowany sposób
+serializacji danych strukturalnych - podobny do XML-a, ale mniejszy,
+szybszy i prostszy. Definiuje się raz, jaką strukturę mają mieć dane,
+a następnie używa specjalnie wygenerowanego kodu źródłowego do łatwego
+zapisu i odczytu danych strukturalnych do i z różnych strumieni
+danych, z poziomu różnych języków. Można nawet uaktualniać strukturę
+danych bez psucia programów skompilowanych w oparciu o "stary" format.
+
+Google używa buforów protokołowych (Protocol Buffers) do prawie
+wszystkich wewnętrznych protokołów RPC i formatów plików.
 
 %package libs
 Summary:	protobuf libraries
