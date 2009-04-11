@@ -107,17 +107,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libproto*.so.*.*.*
+%attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.3
+%attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libprotoc.so.3
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libprotobuf.so
+%attr(755,root,root) %{_libdir}/libprotoc.so
+%{_libdir}/libprotobuf.la
+%{_libdir}/libprotoc.la
 %{_includedir}/google
-%attr(755,root,root) %{_libdir}/libproto*.la
-%attr(755,root,root) %{_libdir}/libproto*.so
 %{_examplesdir}/%{name}-%{version}
 
 %files static
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libproto*.a
+%{_libdir}/libprotobuf.a
+%{_libdir}/libprotoc.a
