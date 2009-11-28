@@ -14,6 +14,7 @@ Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	37e6e4d63434672c70bd977be9c372cb
 URL:		http://code.google.com/p/protobuf/
 BuildRequires:	libstdc++-devel
+BuildRequires:	rpm-pythonprov
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -28,7 +29,7 @@ You can even update your data structure without breaking deployed
 programs that are compiled against the "old" format.
 
 Google uses Protocol Buffers for almost all of its internal RPC
-protocols and file formats. 
+protocols and file formats.
 
 %description -l pl.UTF-8
 Bufory protokołowe to elastyczny, wydajny i zautomatyzowany sposób
