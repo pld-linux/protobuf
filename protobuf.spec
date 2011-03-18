@@ -6,12 +6,12 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	2.0.3
+Version:	2.4.0a
 Release:	1
 License:	BSD
 Group:		Libraries
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	37e6e4d63434672c70bd977be9c372cb
+# Source0-md5:	61df3f63ec284fc6f57a68c67e4918c6
 URL:		http://code.google.com/p/protobuf/
 BuildRequires:	libstdc++-devel
 BuildRequires:	rpm-pythonprov
@@ -108,21 +108,28 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.?
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.3
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.?
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.3
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.?
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libprotobuf-lite.so
 %attr(755,root,root) %{_libdir}/libprotobuf.so
 %attr(755,root,root) %{_libdir}/libprotoc.so
+%{_libdir}/libprotobuf-lite.la
 %{_libdir}/libprotobuf.la
 %{_libdir}/libprotoc.la
 %{_includedir}/google
 %{_examplesdir}/%{name}-%{version}
+%{_pkgconfigdir}/protobuf-lite.pc
+%{_pkgconfigdir}/protobuf.pc
 
 %files static
 %defattr(644,root,root,755)
+%{_libdir}/libprotobuf-lite.a
 %{_libdir}/libprotobuf.a
 %{_libdir}/libprotoc.a
