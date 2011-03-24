@@ -109,11 +109,11 @@ rm -rf $RPM_BUILD_ROOT
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.?
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.7
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.?
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.7
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.?
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.7
 
 %files devel
 %defattr(644,root,root,755)
