@@ -13,7 +13,7 @@ Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	79a8072490f863139f32488c3ff84d39
+# Source0-md5:	ed436802019c9e1f40cc750eaf78f318
 Source1:	ftdetect-proto.vim
 URL:		http://code.google.com/p/protobuf/
 BuildRequires:	autoconf
