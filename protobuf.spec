@@ -23,7 +23,6 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_tests:BuildRequires:	gtest-devel}
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.219
 BuildRequires:	zlib-devel
@@ -139,10 +138,8 @@ descriptions in Vim editor
 %{__rm} -r gtest
 
 %build
-%{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
-%{__autoheader}
 %{__automake}
 %configure
 %{__make}
