@@ -1,11 +1,15 @@
 # TODO:
-#	- add bindings for java and python
+#	- add bindings for java
+#
+# Conditional build:
+#
+%bcond_without	python	# Python bindings
 
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	2.4.1
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
@@ -13,11 +17,17 @@ Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
 Source1:	ftdetect-proto.vim
 URL:		http://code.google.com/p/protobuf/
 BuildRequires:	autoconf
+BuildRequires:	rpmbuild(macros) >= 1.219
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
+%if %{with python}
+BuildRequires:	python-devel
+BuildRequires:	python-distribute
+BuildRequires:	rpm-pythonprov
+%endif
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -101,6 +111,16 @@ Static libraries for Protocol Buffers
 %description static -l pl.UTF-8
 Statyczne biblioteki protobuf.
 
+%package -n python-protobuf
+Summary:	Python bindings for Google Protocol Buffers
+Group:		Development/Languages
+# does not use C++ library at this time
+Conflicts:	%{name} < %{version}
+Conflicts:	%{name} > %{version}
+
+%description -n python-protobuf
+This package contains Python libraries for Google Protocol Buffers
+
 %package -n vim-syntax-protobuf
 Summary:	Vim syntax highlighting for Google Protocol Buffers descriptions
 Group:		Development/Libraries
@@ -117,6 +137,13 @@ descriptions in Vim editor
 %configure
 %{__make}
 
+%if %{with python}
+cd python
+%{__python} setup.py build
+%{__sed} -i -e 1d build/lib/google/protobuf/descriptor_pb2.py
+cd ..
+%endif
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -130,6 +157,16 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install -d $RPM_BUILD_ROOT%{_vimdatadir}/{syntax,ftdetect}
 cp -p editors/proto.vim $RPM_BUILD_ROOT%{_vimdatadir}/syntax/proto.vim
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_vimdatadir}/ftdetect/proto.vim
+
+%if %{with python}
+cd python
+%{__python} setup.py install \
+	--root=$RPM_BUILD_ROOT \
+	--single-version-externally-managed \
+	--optimize=2
+%py_postclean
+cd ..
+%endif
 
 cp -p examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
@@ -180,6 +217,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libprotobuf-lite.a
 %{_libdir}/libprotobuf.a
 %{_libdir}/libprotoc.a
+
+%if %{with python}
+%files -n python-protobuf
+%defattr(644,root,root,755)
+%doc python/README.txt
+%dir %{py_sitescriptdir}/google
+%{py_sitescriptdir}/google/protobuf
+%{py_sitescriptdir}/protobuf-%{version}-py*.egg-info
+%{py_sitescriptdir}/protobuf-%{version}-py*-nspkg.pth
+%endif
 
 %files -n vim-syntax-protobuf
 %defattr(644,root,root,755)
