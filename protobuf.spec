@@ -25,7 +25,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 %if %{with python}
 BuildRequires:	python-devel
-BuildRequires:	python-distribute
+BuildRequires:	python-setuptools
 BuildRequires:	rpm-pythonprov
 %endif
 Requires:	%{name}-libs = %{version}-%{release}
