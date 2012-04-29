@@ -1,6 +1,5 @@
 # TODO:
 #	- add bindings for java and python
-#	- add vim syntax package
 
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
@@ -11,6 +10,7 @@ License:	BSD
 Group:		Libraries
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	79a8072490f863139f32488c3ff84d39
+Source1:	ftdetect-proto.vim
 URL:		http://code.google.com/p/protobuf/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -20,6 +20,8 @@ BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_vimdatadir	%{_datadir}/vim
 
 %description
 Protocol Buffers are a way of encoding structured data in an efficient
@@ -99,6 +101,15 @@ Static libraries for Protocol Buffers
 %description static -l pl.UTF-8
 Statyczne biblioteki protobuf.
 
+%package -n vim-syntax-protobuf
+Summary:	Vim syntax highlighting for Google Protocol Buffers descriptions
+Group:		Development/Libraries
+Requires:	vim-rt >= 4:7.2.170
+
+%description -n vim-syntax-protobuf
+This package contains syntax highlighting for Google Protocol Buffers
+descriptions in Vim editor
+
 %prep
 %setup -q
 
@@ -115,6 +126,10 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 	INSTALL="install -p"  \
 	CPPROG="cp -p" \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install -d $RPM_BUILD_ROOT%{_vimdatadir}/{syntax,ftdetect}
+cp -p editors/proto.vim $RPM_BUILD_ROOT%{_vimdatadir}/syntax/proto.vim
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_vimdatadir}/ftdetect/proto.vim
 
 cp -p examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
@@ -165,3 +180,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libprotobuf-lite.a
 %{_libdir}/libprotobuf.a
 %{_libdir}/libprotoc.a
+
+%files -n vim-syntax-protobuf
+%defattr(644,root,root,755)
+%{_datadir}/vim/ftdetect/proto.vim
+%{_datadir}/vim/syntax/proto.vim
