@@ -1,8 +1,7 @@
-#
 # TODO:
 #	- add bindings for java and python
 #	- add vim syntax package
-#
+
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
@@ -11,25 +10,32 @@ Release:	1
 License:	BSD
 Group:		Libraries
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	ed436802019c9e1f40cc750eaf78f318
+# Source0-md5:	79a8072490f863139f32488c3ff84d39
 URL:		http://code.google.com/p/protobuf/
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	libstdc++-devel
-BuildRequires:	rpm-pythonprov
+BuildRequires:	libtool
+BuildRequires:	pkgconfig
+BuildRequires:	zlib-devel
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Protocol buffers are a flexible, efficient, automated mechanism
-for serializing structured data - similar to XML, but smaller,
-faster, and simpler. You define how you want your data to be
-structured once, then you can use special generated source code
-to easily write and read your structured data to and from
-a variety of data streams and using a variety of languages.
-You can even update your data structure without breaking deployed
-programs that are compiled against the "old" format.
+Protocol Buffers are a way of encoding structured data in an efficient
+yet extensible format. Google uses Protocol Buffers for almost all of
+its internal RPC protocols and file formats.
 
-Google uses Protocol Buffers for almost all of its internal RPC
-protocols and file formats.
+Protocol buffers are a flexible, efficient, automated mechanism for
+serializing structured data – think XML, but smaller, faster, and
+simpler. You define how you want your data to be structured once, then
+you can use special generated source code to easily write and read
+your structured data to and from a variety of data streams and using a
+variety of languages. You can even update your data structure without
+breaking deployed programs that are compiled against the "old" format.
+
+This package contains Protocol Buffers compiler for all programming
+languages
 
 %description -l pl.UTF-8
 Bufory protokołowe to elastyczny, wydajny i zautomatyzowany sposób
@@ -54,27 +60,41 @@ protobuf libraries.
 %description libs -l pl.UTF-8
 Biblioteki protobuf.
 
+%package lite
+Summary:	Protocol Buffers LITE_RUNTIME libraries
+Group:		Development/Libraries
+
+%description lite
+Protocol Buffers built with optimize_for = LITE_RUNTIME.
+
+The "optimize_for = LITE_RUNTIME" option causes the compiler to
+generate code which only depends libprotobuf-lite, which is much
+smaller than libprotobuf but lacks descriptors, reflection, and some
+other features.
+
 %package devel
-Summary:	Header files for protobuf libraries
+Summary:	Protocol Buffers C++ headers and libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek protobuf
 Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libstdc++-devel
 
 %description devel
-Header files for protobuf libraries.
+This package contains Protocol Buffers compiler for all languages and
+C++ headers and libraries
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe bibliotek protobuf.
 
 %package static
-Summary:	Static protobuf libraries
+Summary:	Static development files for protobuf
 Summary(pl.UTF-8):	Statyczne biblioteki protobuf
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-Static protobuf libraries.
+Static libraries for Protocol Buffers
 
 %description static -l pl.UTF-8
 Statyczne biblioteki protobuf.
@@ -91,29 +111,41 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %{__make} install \
+	STRIPBINARIES=no \
+	INSTALL="install -p"  \
+	CPPROG="cp -p" \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -p examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
+
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
+
+%post	lite -p /sbin/ldconfig
+%postun	lite -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
 %doc CHANGES.txt CONTRIBUTORS.txt README.txt
 %attr(755,root,root) %{_bindir}/protoc
+%attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.7
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.7
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.7
-%attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.7
+
+%files lite
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.7
 
 %files devel
 %defattr(644,root,root,755)
