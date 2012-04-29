@@ -1,9 +1,11 @@
 # TODO:
 #	- add bindings for java
+#	- tests fail: 2 of 5 tests failed
 #
 # Conditional build:
 #
 %bcond_without	python	# Python bindings
+%bcond_with		tests	# build with tests
 
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
@@ -19,7 +21,7 @@ Patch0:		system-gtest.patch
 URL:		http://code.google.com/p/protobuf/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	gtest-devel
+%{?with_tests:BuildRequires:	gtest-devel}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
@@ -150,6 +152,10 @@ cd python
 %{__python} setup.py build
 %{__sed} -i -e 1d build/lib/google/protobuf/descriptor_pb2.py
 cd ..
+%endif
+
+%if %{with tests}
+%{__make} check
 %endif
 
 %install
