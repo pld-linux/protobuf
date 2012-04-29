@@ -15,13 +15,15 @@ Group:		Libraries
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	ed436802019c9e1f40cc750eaf78f318
 Source1:	ftdetect-proto.vim
+Patch0:		system-gtest.patch
 URL:		http://code.google.com/p/protobuf/
 BuildRequires:	autoconf
-BuildRequires:	rpmbuild(macros) >= 1.219
 BuildRequires:	automake
+BuildRequires:	gtest-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
+BuildRequires:	rpmbuild(macros) >= 1.219
 BuildRequires:	zlib-devel
 %if %{with python}
 BuildRequires:	python-setuptools
@@ -131,8 +133,15 @@ descriptions in Vim editor
 
 %prep
 %setup -q
+%patch0 -p1
+%{__rm} -r gtest
 
 %build
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure
 %{__make}
 
