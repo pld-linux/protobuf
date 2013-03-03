@@ -3,9 +3,8 @@
 #	- tests fail: 2 of 5 tests failed
 #
 # Conditional build:
-#
 %bcond_without	python	# Python bindings
-%bcond_with		tests	# build with tests
+%bcond_with	tests	# perform "make check"
 
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
@@ -14,6 +13,7 @@ Version:	2.4.1
 Release:	3
 License:	BSD
 Group:		Libraries
+#Source0Download: http://code.google.com/p/protobuf/downloads/list
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	ed436802019c9e1f40cc750eaf78f318
 Source1:	ftdetect-proto.vim
@@ -41,7 +41,7 @@ yet extensible format. Google uses Protocol Buffers for almost all of
 its internal RPC protocols and file formats.
 
 Protocol buffers are a flexible, efficient, automated mechanism for
-serializing structured data – think XML, but smaller, faster, and
+serializing structured data - think XML, but smaller, faster, and
 simpler. You define how you want your data to be structured once, then
 you can use special generated source code to easily write and read
 your structured data to and from a variety of data streams and using a
@@ -49,9 +49,14 @@ variety of languages. You can even update your data structure without
 breaking deployed programs that are compiled against the "old" format.
 
 This package contains Protocol Buffers compiler for all programming
-languages
+languages.
 
 %description -l pl.UTF-8
+Bufory protokołowe (Protocol Buffers) to sposób kodowania danych
+strukturalnych w wydajny i rozszerzalny sposób. Google używa buforów
+protokołowych do prawie wszystkich wewnętrznych protokołów RPC i
+formatów plików.
+
 Bufory protokołowe to elastyczny, wydajny i zautomatyzowany sposób
 serializacji danych strukturalnych - podobny do XML-a, ale mniejszy,
 szybszy i prostszy. Definiuje się raz, jaką strukturę mają mieć dane,
@@ -60,35 +65,45 @@ zapisu i odczytu danych strukturalnych do i z różnych strumieni
 danych, z poziomu różnych języków. Można nawet uaktualniać strukturę
 danych bez psucia programów skompilowanych w oparciu o "stary" format.
 
-Google używa buforów protokołowych (Protocol Buffers) do prawie
-wszystkich wewnętrznych protokołów RPC i formatów plików.
+Ten pakiet zawiera kompilator buforów protokołowych dla wszystkich
+języków programowania. 
 
 %package libs
-Summary:	protobuf libraries
-Summary(pl.UTF-8):	Biblioteki protobuf
+Summary:	Protocol Buffers library
+Summary(pl.UTF-8):	Biblioteka buforów protokołowych (Protocol Buffers)
 Group:		Libraries
 
 %description libs
-protobuf libraries.
+Protocol Buffers library.
 
 %description libs -l pl.UTF-8
-Biblioteki protobuf.
+Biblioteka buforów protokołowych (Protocol Buffers).
 
 %package lite
-Summary:	Protocol Buffers LITE_RUNTIME libraries
-Group:		Development/Libraries
+Summary:	Protocol Buffers LITE_RUNTIME library
+Summary(pl.UTF-8):	Biblioteka LITE_RUNTIME buforów protokołowych (Protocol Buffers)
+Group:		Libraries
 
 %description lite
-Protocol Buffers built with optimize_for = LITE_RUNTIME.
+Protocol Buffers library for programs built with optimize_for =
+LITE_RUNTIME.
 
 The "optimize_for = LITE_RUNTIME" option causes the compiler to
 generate code which only depends libprotobuf-lite, which is much
 smaller than libprotobuf but lacks descriptors, reflection, and some
 other features.
 
+%description lite -l pl.UTF-8
+Biblioteka buforów protokołowych (Protocol Buffers) zbudowana dla
+programów z opcją optimize_for = LITE_RUNTIME.
+
+Opcja ta powoduje, że kompilator generuje kod, który wymaga tylko
+biblioteki libprotobuf-lite, która jest mniejsza niż libprotobuf, ale
+nie ma niektórych elementów, takich jak deskryptory czy refleksje.
+
 %package devel
-Summary:	Protocol Buffers C++ headers and libraries
-Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek protobuf
+Summary:	Header files for Protocol Buffers libraries
+Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek buforów protokołowych (Protocol Buffers)
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-libs = %{version}-%{release}
@@ -96,42 +111,50 @@ Requires:	%{name}-lite = %{version}-%{release}
 Requires:	libstdc++-devel
 
 %description devel
-This package contains Protocol Buffers compiler for all languages and
-C++ headers and libraries
+Header files for Protocol Buffers libraries.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe bibliotek protobuf.
+Pliki nagłówkowe bibliotek buforów protokołowych (Protocol Buffers).
 
 %package static
-Summary:	Static development files for protobuf
-Summary(pl.UTF-8):	Statyczne biblioteki protobuf
+Summary:	Static Protocol Buffers libraries
+Summary(pl.UTF-8):	Statyczne biblioteki buforów protokołowych (Protocol Buffers)
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-Static libraries for Protocol Buffers
+Static Protocol Buffers libraries.
 
 %description static -l pl.UTF-8
-Statyczne biblioteki protobuf.
+Statyczne biblioteki buforów protokołowych (Protocol Buffers).
 
 %package -n python-protobuf
-Summary:	Python bindings for Google Protocol Buffers
-Group:		Development/Languages
+Summary:	Python bindings for Protocol Buffers
+Summary(pl.UTF-8):	Wiązania Pythona do buforów protokołowych (Protocol Buffers)
+Group:		Development/Languages/Python
 # does not use C++ library at this time
 Conflicts:	%{name} < %{version}
 Conflicts:	%{name} > %{version}
 
 %description -n python-protobuf
-This package contains Python libraries for Google Protocol Buffers
+Python bindings for Protocol Buffers.
+
+%description -n python-protobuf -l pl.UTF-8
+Wiązania Pythona do buforów protokołowych (Protocol Buffers).
 
 %package -n vim-syntax-protobuf
-Summary:	Vim syntax highlighting for Google Protocol Buffers descriptions
+Summary:	Vim syntax highlighting for Protocol Buffers descriptions
+Summary(pl.UTF-8):	Podświetlanie składni Vima dla opisów buforów protokołowych (Protocol Buffers)
 Group:		Development/Libraries
 Requires:	vim-rt >= 4:7.2.170
 
 %description -n vim-syntax-protobuf
-This package contains syntax highlighting for Google Protocol Buffers
-descriptions in Vim editor
+This package contains syntax highlighting for Protocol Buffers
+descriptions in Vim editor.
+
+%description -n vim-syntax-protobuf -l pl.UTF-8
+Ten pakiet zawiera pliki podświetlania składni edytora Vim dla
+opisów buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q
