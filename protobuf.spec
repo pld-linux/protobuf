@@ -1,21 +1,20 @@
 # TODO:
-#	- add bindings for java
-#	- tests fail: 2 of 5 tests failed
+# - add bindings for java (maven build)
 #
 # Conditional build:
 %bcond_without	python	# Python bindings
-%bcond_with	tests	# perform "make check"
+%bcond_without	tests	# perform "make check"
 
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	2.4.1
-Release:	3
+Version:	2.5.0
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: http://code.google.com/p/protobuf/downloads/list
 Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	ed436802019c9e1f40cc750eaf78f318
+# Source0-md5:	a72001a9067a4c2c4e0e836d0f92ece4
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 URL:		http://code.google.com/p/protobuf/
@@ -222,17 +221,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt README.txt
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.7
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.8
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.7
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.8
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.7
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.8
 
 %files devel
 %defattr(644,root,root,755)
@@ -242,10 +241,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libprotobuf-lite.la
 %{_libdir}/libprotobuf.la
 %{_libdir}/libprotoc.la
-%{_includedir}/google
-%{_examplesdir}/%{name}-%{version}
+# XXX: dir shared with libtcmalloc
+%dir %{_includedir}/google
+%{_includedir}/google/protobuf
 %{_pkgconfigdir}/protobuf-lite.pc
 %{_pkgconfigdir}/protobuf.pc
+%{_examplesdir}/%{name}-%{version}
 
 %files static
 %defattr(644,root,root,755)
