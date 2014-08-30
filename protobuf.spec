@@ -166,8 +166,8 @@ opisów buforów protokołowych (Protocol Buffers).
 %{__automake}
 # Additional variables defined according to https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=192821
 %configure \
-	CFLAGS='-DGOOGLE_PROTOBUF_NO_RTTI' \
-	CPPFLAGS='-DGOOGLE_PROTOBUF_NO_RTTI'
+	CFLAGS='%{rpmcflags} -DGOOGLE_PROTOBUF_NO_RTTI' \
+	CPPFLAGS='%{rpmcppflags} -DGOOGLE_PROTOBUF_NO_RTTI'
 %{__make}
 
 %if %{with python}
