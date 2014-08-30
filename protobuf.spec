@@ -9,7 +9,7 @@ Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	2.5.0
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 #Source0Download: http://code.google.com/p/protobuf/downloads/list
@@ -164,7 +164,10 @@ opisów buforów protokołowych (Protocol Buffers).
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
-%configure
+# Additional variables defined according to https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=192821
+%configure \
+	CFLAGS='-DGOOGLE_PROTOBUF_NO_RTTI' \
+	CPPFLAGS='-DGOOGLE_PROTOBUF_NO_RTTI'
 %{__make}
 
 %if %{with python}
