@@ -57,10 +57,9 @@ diff -up protobuf-2.3.0/Makefile.am.orig protobuf-2.3.0/Makefile.am
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = protobuf.pc protobuf-lite.pc
  
-diff -up protobuf-2.3.0/src/Makefile.am.orig protobuf-2.3.0/src/Makefile.am
---- protobuf-2.3.0/src/Makefile.am.orig	2010-04-21 18:56:57.342268786 -0600
-+++ protobuf-2.3.0/src/Makefile.am	2010-04-21 20:02:40.168268698 -0600
-@@ -276,10 +276,8 @@ COMMON_TEST_SOURCES =                   
+--- protobuf-2.6.1/src/Makefile.am.orig	2014-10-11 07:50:39.000000000 +0200
++++ protobuf-2.6.1/src/Makefile.am	2014-10-13 21:17:00.879286908 +0200
+@@ -325,10 +325,8 @@
  check_PROGRAMS = protoc protobuf-test protobuf-lazy-descriptor-test \
                   protobuf-lite-test test_plugin $(GZCHECKPROGRAMS)
  protobuf_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \
@@ -73,21 +72,20 @@ diff -up protobuf-2.3.0/src/Makefile.am.orig protobuf-2.3.0/src/Makefile.am
  # Disable optimization for tests unless the user explicitly asked for it,
  # since test_util.cc takes forever to compile with optimization (with GCC).
  # See configure.ac for more info.
-@@ -319,11 +317,8 @@ nodist_protobuf_test_SOURCES = $(protoc_
- 
+@@ -375,10 +373,8 @@
  # Run cpp_unittest again with PROTOBUF_TEST_NO_DESCRIPTORS defined.
  protobuf_lazy_descriptor_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la \
--                      $(top_builddir)/gtest/lib/libgtest.la       \
+                       libprotoc.la                                   \
+-                      $(top_builddir)/gtest/lib/libgtest.la          \
 -                      $(top_builddir)/gtest/lib/libgtest_main.la
 -protobuf_lazy_descriptor_test_CPPFLAGS = -I$(top_srcdir)/gtest/include    \
 -                                         -I$(top_builddir)/gtest/include  \
--                                         -DPROTOBUF_TEST_NO_DESCRIPTORS
-+                                      -lgtest -lgtest_main
-+protobuf_lazy_descriptor_test_CPPFLAGS = -DPROTOBUF_TEST_NO_DESCRIPTORS
++		      -lgtest -lgtest_main
++protobuf_lazy_descriptor_test_CPPFLAGS = \
+                                          -DPROTOBUF_TEST_NO_DESCRIPTORS
  protobuf_lazy_descriptor_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
  protobuf_lazy_descriptor_test_SOURCES =                        \
-   google/protobuf/compiler/cpp/cpp_unittest.cc                 \
-@@ -341,7 +336,7 @@ nodist_protobuf_lite_test_SOURCES = $(pr
+@@ -397,7 +393,7 @@
  
  # Test plugin binary.
  test_plugin_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \

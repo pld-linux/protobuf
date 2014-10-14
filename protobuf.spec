@@ -8,23 +8,23 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	2.5.0
-Release:	2
+Version:	2.6.0
+Release:	1
 License:	BSD
 Group:		Libraries
-#Source0Download: http://code.google.com/p/protobuf/downloads/list
-Source0:	http://protobuf.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	a72001a9067a4c2c4e0e836d0f92ece4
+Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	99d5f73dcd473594bf8f245d7b0cfb77
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
-URL:		http://code.google.com/p/protobuf/
-BuildRequires:	autoconf
+URL:		https://github.com/google/protobuf/
+BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
 %{?with_tests:BuildRequires:	gtest-devel}
 BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.219
-BuildRequires:	zlib-devel
+BuildRequires:	zlib-devel >= 1.2.0.4
 %if %{with python}
 BuildRequires:	python-setuptools
 BuildRequires:	rpm-pythonprov
@@ -71,6 +71,7 @@ języków programowania.
 Summary:	Protocol Buffers library
 Summary(pl.UTF-8):	Biblioteka buforów protokołowych (Protocol Buffers)
 Group:		Libraries
+Requires:	zlib >= 1.2.0.4
 
 %description libs
 Protocol Buffers library.
@@ -158,11 +159,12 @@ opisów buforów protokołowych (Protocol Buffers).
 %prep
 %setup -q
 %patch0 -p1
-%{__rm} -r gtest
 
 %build
+%{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 # Additional variables defined according to https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=192821
 %configure \
@@ -221,20 +223,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES.txt CONTRIBUTORS.txt README.txt
+%doc CHANGES.txt CONTRIBUTORS.txt COPYING.txt README.txt
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.8
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.9
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.8
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.9
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.8
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.9
 
 %files devel
 %defattr(644,root,root,755)
