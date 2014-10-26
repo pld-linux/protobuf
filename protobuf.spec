@@ -26,6 +26,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.219
 BuildRequires:	zlib-devel >= 1.2.0.4
 %if %{with python}
+BuildRequires:	python-google-apputils
 BuildRequires:	python-setuptools
 BuildRequires:	rpm-pythonprov
 %endif
