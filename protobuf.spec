@@ -8,12 +8,12 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	2.6.0
-Release:	3
+Version:	2.6.1
+Release:	1
 License:	BSD
 Group:		Libraries
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	99d5f73dcd473594bf8f245d7b0cfb77
+# Source0-md5:	af05b2cca289f7b86eef2734a0cdc8b9
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 URL:		https://github.com/google/protobuf/
@@ -224,7 +224,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES.txt CONTRIBUTORS.txt COPYING.txt README.txt
+%doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libprotoc.so.9
