@@ -9,7 +9,7 @@ Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	2.6.1
-Release:	3
+Release:	4
 License:	BSD
 Group:		Libraries
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -175,8 +175,7 @@ opisów buforów protokołowych (Protocol Buffers).
 
 %if %{with python}
 cd python
-%{__python} setup.py build
-%{__sed} -i -e 1d build/lib/google/protobuf/descriptor_pb2.py
+%py_build
 cd ..
 %endif
 
@@ -200,10 +199,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_vimdatadir}/ftdetect/proto.vim
 
 %if %{with python}
 cd python
-%{__python} setup.py install \
-	--root=$RPM_BUILD_ROOT \
-	--single-version-externally-managed \
-	--optimize=2
+%py_install
 %py_postclean
 cd ..
 %endif
