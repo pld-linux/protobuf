@@ -1,5 +1,8 @@
 # TODO:
 # - add bindings for java (maven build)
+# - add bindings for ruby
+# - add bindings for javascript
+# - add bindings for csharp
 #
 # Conditional build:
 %bcond_without	python	# Python bindings
@@ -8,12 +11,12 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	2.6.1
-Release:	4
+Version:	3.0.0
+Release:	0.1
 License:	BSD
 Group:		Libraries
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	af05b2cca289f7b86eef2734a0cdc8b9
+# Source0-md5:	d4f6ca65aadc6310b3872ee421e79fa6
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 URL:		https://github.com/google/protobuf/
@@ -159,7 +162,7 @@ opisów buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q
-%patch0 -p1
+#%patch0 -p1 NEEDS UPDATE
 
 %build
 %{__libtoolize}
