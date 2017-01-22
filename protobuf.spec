@@ -11,17 +11,19 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.0.0
+Version:	3.1.0
 Release:	0.1
 License:	BSD
 Group:		Libraries
+#Source0Download: https://github.com/google/protobuf/releases
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	d4f6ca65aadc6310b3872ee421e79fa6
+# Source0-md5:	14a532a7538551d5def317bfca41dace
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.9
+%{?with_tests:BuildRequires:	gmock-devel}
 %{?with_tests:BuildRequires:	gtest-devel}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
@@ -37,6 +39,9 @@ Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_vimdatadir	%{_datadir}/vim
+
+# triggers bogus "overflow in constant expression" errors with gcc 4.9 .. 5.4
+%define		filterout	-fwrapv
 
 %description
 Protocol Buffers are a way of encoding structured data in an efficient
@@ -162,7 +167,9 @@ opisów buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q
-#%patch0 -p1 NEEDS UPDATE
+%patch0 -p1
+
+ln -s /usr/src/gmock/src/gmock*.cc src
 
 %build
 %{__libtoolize}
@@ -226,17 +233,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.9
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.11
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.9
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.11
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.9
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.11
 
 %files devel
 %defattr(644,root,root,755)
@@ -262,7 +269,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python}
 %files -n python-protobuf
 %defattr(644,root,root,755)
-%doc python/README.txt
+%doc python/README.md
 %dir %{py_sitescriptdir}/google
 %{py_sitescriptdir}/google/protobuf
 %{py_sitescriptdir}/protobuf-%{version}-py*.egg-info

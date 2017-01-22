@@ -1,96 +1,144 @@
---- protobuf-2.5.0/autogen.sh.orig	2013-03-03 08:13:52.293540047 +0100
-+++ protobuf-2.5.0/autogen.sh	2013-03-03 08:14:36.570204855 +0100
-@@ -15,25 +15,8 @@
+--- protobuf-3.1.0/autogen.sh.orig	2016-12-29 21:02:59.643624708 +0100
++++ protobuf-3.1.0/autogen.sh	2016-12-29 21:03:02.716958006 +0100
+@@ -27,21 +27,6 @@
    exit 1
  fi
  
--# Check that gtest is present.  Usually it is already there since the
+-# Check that gmock is present.  Usually it is already there since the
 -# directory is set up as an SVN external.
--if test ! -e gtest; then
--  echo "Google Test not present.  Fetching gtest-1.5.0 from the web..."
--  curl http://googletest.googlecode.com/files/gtest-1.5.0.tar.bz2 | tar jx
--  mv gtest-1.5.0 gtest
+-if test ! -e gmock; then
+-  echo "Google Mock not present.  Fetching gmock-1.7.0 from the web..."
+-  curl $curlopts -L -O https://github.com/google/googlemock/archive/release-1.7.0.zip
+-  unzip -q release-1.7.0.zip
+-  rm release-1.7.0.zip
+-  mv googlemock-release-1.7.0 gmock
+-
+-  curl $curlopts -L -O https://github.com/google/googletest/archive/release-1.7.0.zip
+-  unzip -q release-1.7.0.zip
+-  rm release-1.7.0.zip
+-  mv googletest-release-1.7.0 gmock/gtest
 -fi
 -
  set -ex
  
--# Temporary hack:  Must change C runtime library to "multi-threaded DLL",
--#   otherwise it will be set to "multi-threaded static" when MSVC upgrades
--#   the project file to MSVC 2005/2008.  vladl of Google Test says gtest will
--#   probably change their default to match, then this will be unnecessary.
--#   One of these mappings converts the debug configuration and the other
--#   converts the release configuration.  I don't know which is which.
--sed -i -e 's/RuntimeLibrary="5"/RuntimeLibrary="3"/g;
--           s/RuntimeLibrary="4"/RuntimeLibrary="2"/g;' gtest/msvc/*.vcproj
--
  # TODO(kenton):  Remove the ",no-obsolete" part and fix the resulting warnings.
- autoreconf -f -i -Wall,no-obsolete
+--- protobuf-3.1.0/Makefile.am.orig	2016-09-24 04:12:45.000000000 +0200
++++ protobuf-3.1.0/Makefile.am	2016-12-29 21:03:50.640290792 +0100
+@@ -11,28 +11,8 @@
+ # Always include gmock in distributions.
+ DIST_SUBDIRS = $(subdirs) src conformance benchmarks
  
-diff -up protobuf-2.3.0/Makefile.am.orig protobuf-2.3.0/Makefile.am
---- protobuf-2.3.0/Makefile.am.orig	2010-04-21 18:55:38.009265866 -0600
-+++ protobuf-2.3.0/Makefile.am	2010-04-21 18:56:15.068016238 -0600
-@@ -11,27 +11,6 @@ SUBDIRS = . src
- # Always include gtest in distributions.
- DIST_SUBDIRS = $(subdirs) src
- 
--# Build gtest before we build protobuf tests.  We don't add gtest to SUBDIRS
--# because then "make check" would also build and run all of gtest's own tests,
+-# Build gmock before we build protobuf tests.  We don't add gmock to SUBDIRS
+-# because then "make check" would also build and run all of gmock's own tests,
 -# which takes a lot of time and is generally not useful to us.  Also, we don't
--# want "make install" to recurse into gtest since we don't want to overwrite
--# the installed version of gtest if there is one.
+-# want "make install" to recurse into gmock since we don't want to overwrite
+-# the installed version of gmock if there is one.
 -check-local:
--	@echo "Making lib/libgtest.a lib/libgtest_main.a in gtest"
--	@cd gtest && $(MAKE) $(AM_MAKEFLAGS) lib/libgtest.la lib/libgtest_main.la
+-	@echo "Making lib/libgmock.a lib/libgmock_main.a in gmock"
+-	@cd gmock && $(MAKE) $(AM_MAKEFLAGS) lib/libgmock.la lib/libgmock_main.la
+-	@cd gmock/gtest && $(MAKE) $(AM_MAKEFLAGS) lib/libgtest.la lib/libgtest_main.la
 -
--# We would like to clean gtest when "make clean" is invoked.  But we have to
+-# We would like to clean gmock when "make clean" is invoked.  But we have to
 -# be careful because clean-local is also invoked during "make distclean", but
--# "make distclean" already recurses into gtest because it's listed among the
--# DIST_SUBDIRS.  distclean will delete gtest/Makefile, so if we then try to
+-# "make distclean" already recurses into gmock because it's listed among the
+-# DIST_SUBDIRS.  distclean will delete gmock/Makefile, so if we then try to
 -# cd to the directory again and "make clean" it will fail.  So, check that the
 -# Makefile exists before recursing.
--clean-local:
--	@if test -e gtest/Makefile; then \
--	  echo "Making clean in gtest"; \
--	  cd gtest && $(MAKE) $(AM_MAKEFLAGS) clean; \
--	fi
--
- pkgconfigdir = $(libdir)/pkgconfig
- pkgconfig_DATA = protobuf.pc protobuf-lite.pc
+ clean-local:
+-	@if test -e gmock/Makefile; then \
+-	  echo "Making clean in gmock"; \
+-	  cd gmock && $(MAKE) $(AM_MAKEFLAGS) clean; \
+-	fi; \
+-	if test -e conformance/Makefile; then \
++	@if test -e conformance/Makefile; then \
+ 	  echo "Making clean in conformance"; \
+ 	  cd conformance && $(MAKE) $(AM_MAKEFLAGS) clean; \
+ 	fi; \
+--- protobuf-3.1.0/src/Makefile.am.orig	2016-12-29 21:01:17.820292537 +0100
++++ protobuf-3.1.0/src/Makefile.am	2016-12-29 21:32:14.440271338 +0100
+@@ -693,15 +693,22 @@
+   google/protobuf/testing/file.cc                              \
+   google/protobuf/testing/file.h
  
---- protobuf-2.6.1/src/Makefile.am.orig	2014-10-11 07:50:39.000000000 +0200
-+++ protobuf-2.6.1/src/Makefile.am	2014-10-13 21:17:00.879286908 +0200
-@@ -325,10 +325,8 @@
++gmock_dir = /usr/src/gmock/src
++gmock_inc_dir = /usr/src/gmock/src
++gtest_inc_dir = /usr/include/gtest
++check_LTLIBRARIES = libgmock.la libgmock_main.la
++libgmock_la_SOURCES = ./gmock-all.cc
++libgmock_main_la_SOURCES = ./gmock_main.cc
++
  check_PROGRAMS = protoc protobuf-test protobuf-lazy-descriptor-test \
-                  protobuf-lite-test test_plugin $(GZCHECKPROGRAMS)
+                  protobuf-lite-test test_plugin protobuf-lite-arena-test \
+                  no-warning-test $(GZCHECKPROGRAMS)
  protobuf_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \
--                      $(top_builddir)/gtest/lib/libgtest.la       \
--                      $(top_builddir)/gtest/lib/libgtest_main.la
--protobuf_test_CPPFLAGS = -I$(top_srcdir)/gtest/include         \
--                         -I$(top_builddir)/gtest/include
-+                      -lgtest -lgtest_main
-+protobuf_test_CPPFLAGS =
+-                      ../gmock/gtest/lib/libgtest.la              \
+-                      ../gmock/lib/libgmock.la                    \
+-                      ../gmock/lib/libgmock_main.la
+-protobuf_test_CPPFLAGS = -I$(srcdir)/../gmock/gtest/include \
+-                         -I$(srcdir)/../gmock/include
++                      -lgtest              \
++                      libgmock_main.la                    \
++                      libgmock.la
++protobuf_test_CPPFLAGS = -I$(gtest_inc_dir) \
++                         -I$(gmock_inc_dir)
  # Disable optimization for tests unless the user explicitly asked for it,
  # since test_util.cc takes forever to compile with optimization (with GCC).
  # See configure.ac for more info.
-@@ -375,10 +373,8 @@
+@@ -784,11 +790,11 @@
  # Run cpp_unittest again with PROTOBUF_TEST_NO_DESCRIPTORS defined.
  protobuf_lazy_descriptor_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la \
                        libprotoc.la                                   \
--                      $(top_builddir)/gtest/lib/libgtest.la          \
--                      $(top_builddir)/gtest/lib/libgtest_main.la
--protobuf_lazy_descriptor_test_CPPFLAGS = -I$(top_srcdir)/gtest/include    \
--                                         -I$(top_builddir)/gtest/include  \
-+		      -lgtest -lgtest_main
-+protobuf_lazy_descriptor_test_CPPFLAGS = \
+-                      ../gmock/gtest/lib/libgtest.la                 \
+-                      ../gmock/lib/libgmock.la                       \
+-                      ../gmock/lib/libgmock_main.la
+-protobuf_lazy_descriptor_test_CPPFLAGS = -I$(srcdir)/../gmock/include       \
+-                                         -I$(srcdir)/../gmock/gtest/include \
++                      -lgtest                 \
++                      libgmock_main.la                       \
++                      libgmock.la
++protobuf_lazy_descriptor_test_CPPFLAGS = -I$(gmock_dir)       \
++                                         -I$(gtest_inc_dir) \
                                           -DPROTOBUF_TEST_NO_DESCRIPTORS
  protobuf_lazy_descriptor_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
  protobuf_lazy_descriptor_test_SOURCES =                        \
-@@ -397,7 +393,7 @@
+@@ -819,11 +825,11 @@
+ # gtest when building the test internally our memory sanitizer doesn't detect
+ # memory leaks (don't know why).
+ protobuf_lite_arena_test_LDADD = $(PTHREAD_LIBS) libprotobuf-lite.la \
+-                      ../gmock/gtest/lib/libgtest.la                 \
+-                      ../gmock/lib/libgmock.la                       \
+-                      ../gmock/lib/libgmock_main.la
+-protobuf_lite_arena_test_CPPFLAGS = -I$(srcdir)/../gmock/include       \
+-                                    -I$(srcdir)/../gmock/gtest/include
++                      -lgtest                 \
++                      libgmock_main.la                       \
++                      libgmock.la
++protobuf_lite_arena_test_CPPFLAGS = -I$(gmock_inc_dir)       \
++                                    -I$(gtest_inc_dir)
+ protobuf_lite_arena_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
+ protobuf_lite_arena_test_SOURCES =       \
+   google/protobuf/lite_arena_unittest.cc \
+@@ -832,8 +838,8 @@
  
  # Test plugin binary.
  test_plugin_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \
--                    $(top_builddir)/gtest/lib/libgtest.la
+-                    ../gmock/gtest/lib/libgtest.la
+-test_plugin_CPPFLAGS = -I$(srcdir)/../gmock/gtest/include
 +                    -lgtest
- test_plugin_CPPFLAGS = -I$(top_srcdir)/gtest/include         \
-                        -I$(top_builddir)/gtest/include
++test_plugin_CPPFLAGS = -I$(gmock_inc_dir)
  test_plugin_SOURCES =                                          \
+   google/protobuf/compiler/mock_code_generator.cc              \
+   google/protobuf/testing/file.cc                              \
+@@ -862,9 +868,9 @@
+ 	echo "TEST(NoWarningTest, Empty) {}" >> no_warning_test.cc
+ 
+ no_warning_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la      \
+-                        ../gmock/gtest/lib/libgtest.la      \
+-                        ../gmock/gtest/lib/libgtest_main.la
+-no_warning_test_CPPFLAGS = -I$(srcdir)/../gmock/gtest/include
++                        -lgtest      \
++                        -lgtest_main
++no_warning_test_CPPFLAGS = -I$(gtest_inc_dir)
+ no_warning_test_CXXFLAGS = $(PTHREAD_CFLAGS) $(PTHREAD_DEF) $(ZLIB_DEF) \
+                            -Wall -Werror
+ nodist_no_warning_test_SOURCES = no_warning_test.cc $(protoc_outputs)
