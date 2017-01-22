@@ -1,11 +1,12 @@
 # TODO:
 # - add bindings for java (maven build)
-# - add bindings for ruby
 # - add bindings for javascript
 # - add bindings for csharp
 #
 # Conditional build:
-%bcond_without	python	# Python bindings
+%bcond_without	python2	# Python 2.x bindings
+%bcond_without	python3	# Python 3.x bindings
+%bcond_without	ruby	# Ruby bindings
 %bcond_without	tests	# perform "make check"
 
 Summary:	Protocol Buffers - Google's data interchange format
@@ -28,13 +29,24 @@ BuildRequires:	automake >= 1:1.9
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.219
-BuildRequires:	zlib-devel >= 1.2.0.4
-%if %{with python}
-BuildRequires:	python-google-apputils
+%if %{with python2}
+BuildRequires:	python-modules >= 1:2.6
 BuildRequires:	python-setuptools
+%endif
+%if %{with python3}
+BuildRequires:	python3-modules >= 1:3.3
+BuildRequires:	python3-setuptools
+%endif
+%if %{with python2} || %{with python3}
 BuildRequires:	rpm-pythonprov
 %endif
+BuildRequires:	rpmbuild(macros) >= 1.714
+%if %{with ruby}
+BuildRequires:	ruby-devel
+BuildRequires:	ruby-rake
+BuildRequires:	ruby-rake-compiler
+%endif
+BuildRequires:	zlib-devel >= 1.2.0.4
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -138,18 +150,42 @@ Static Protocol Buffers libraries.
 Statyczne biblioteki buforów protokołowych (Protocol Buffers).
 
 %package -n python-protobuf
-Summary:	Python bindings for Protocol Buffers
-Summary(pl.UTF-8):	Wiązania Pythona do buforów protokołowych (Protocol Buffers)
+Summary:	Python 2 bindings for Protocol Buffers
+Summary(pl.UTF-8):	Wiązania Pythona 2 do buforów protokołowych (Protocol Buffers)
 Group:		Development/Languages/Python
+Requires:	python-modules >= 1:2.6
 # does not use C++ library at this time
-Conflicts:	%{name} < %{version}
-Conflicts:	%{name} > %{version}
 
 %description -n python-protobuf
-Python bindings for Protocol Buffers.
+Python 2 bindings for Protocol Buffers.
 
 %description -n python-protobuf -l pl.UTF-8
-Wiązania Pythona do buforów protokołowych (Protocol Buffers).
+Wiązania Pythona 2 do buforów protokołowych (Protocol Buffers).
+
+%package -n python3-protobuf
+Summary:	Python 3 bindings for Protocol Buffers
+Summary(pl.UTF-8):	Wiązania Pythona 3 do buforów protokołowych (Protocol Buffers)
+Group:		Development/Languages/Python
+Requires:	python3-modules >= 1:3.3
+# does not use C++ library at this time
+
+%description -n python3-protobuf
+Python 3 bindings for Protocol Buffers.
+
+%description -n python3-protobuf -l pl.UTF-8
+Wiązania Pythona 3 do buforów protokołowych (Protocol Buffers).
+
+%package -n ruby-google-protobuf
+Summary:	Ruby bindings for Google Protocol Buffers
+Summary(pl.UTF-8):	Wiązania języka Ruby do biblioteki Google Protocol Buffers
+Group:		Development/Languages
+Requires:	ruby
+
+%description -n ruby-google-protobuf
+Ruby bindings for Google Protocol Buffers.
+
+%description -n ruby-google-protobuf -l pl.UTF-8
+Wiązania języka Ruby do biblioteki Google Protocol Buffers.
 
 %package -n vim-syntax-protobuf
 Summary:	Vim syntax highlighting for Protocol Buffers descriptions
@@ -183,9 +219,19 @@ ln -s /usr/src/gmock/src/gmock*.cc src
 	CPPFLAGS='%{rpmcppflags} -DGOOGLE_PROTOBUF_NO_RTTI'
 %{__make}
 
-%if %{with python}
 cd python
+%if %{with python2}
 %py_build
+%endif
+%if %{with python3}
+%py3_build
+%endif
+cd ..
+
+%if %{with ruby}
+cd ruby
+rake
+#rake clobber_package gem
 cd ..
 %endif
 
@@ -207,13 +253,22 @@ install -d $RPM_BUILD_ROOT%{_vimdatadir}/{syntax,ftdetect}
 cp -p editors/proto.vim $RPM_BUILD_ROOT%{_vimdatadir}/syntax/proto.vim
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_vimdatadir}/ftdetect/proto.vim
 
-%if %{with python}
 cd python
+%if %{with python2}
 %py_install
 %py_postclean
-cd ..
 %endif
+%if %{with python3}
+%py3_install
+%endif
+cd ..
 
+%if %{with ruby}
+install -d $RPM_BUILD_ROOT{%{ruby_vendorarchdir}/google,%{ruby_vendorlibdir}/google,%{ruby_specdir}}
+install ruby/lib/google/protobuf_c.so $RPM_BUILD_ROOT%{ruby_vendorarchdir}/google
+cp -pr ruby/lib/google/{protobuf,protobuf.rb} $RPM_BUILD_ROOT%{ruby_vendorlibdir}/google
+cp -p ruby/google-protobuf.gemspec $RPM_BUILD_ROOT%{ruby_specdir}/google-protobuf-%{version}.gemspec
+%endif
 cp -p examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %clean
@@ -266,7 +321,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libprotobuf.a
 %{_libdir}/libprotoc.a
 
-%if %{with python}
+%if %{with python2}
 %files -n python-protobuf
 %defattr(644,root,root,755)
 %doc python/README.md
@@ -274,6 +329,28 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitescriptdir}/google/protobuf
 %{py_sitescriptdir}/protobuf-%{version}-py*.egg-info
 %{py_sitescriptdir}/protobuf-%{version}-py*-nspkg.pth
+%endif
+
+%if %{with python3}
+%files -n python3-protobuf
+%defattr(644,root,root,755)
+%doc python/README.md
+%dir %{py3_sitescriptdir}/google
+%{py3_sitescriptdir}/google/protobuf
+%{py3_sitescriptdir}/protobuf-%{version}-py*.egg-info
+%{py3_sitescriptdir}/protobuf-%{version}-py*-nspkg.pth
+%endif
+
+%if %{with ruby}
+%files -n ruby-google-protobuf
+%defattr(644,root,root,755)
+%doc ruby/README.md
+%dir %{ruby_vendorarchdir}/google
+%attr(755,root,root) %{ruby_vendorarchdir}/google/protobuf_c.so
+%dir %{ruby_vendorlibdir}/google
+%{ruby_vendorlibdir}/google/protobuf.rb
+%{ruby_vendorlibdir}/google/protobuf
+%{ruby_specdir}/google-protobuf-%{version}.gemspec
 %endif
 
 %files -n vim-syntax-protobuf
