@@ -12,15 +12,16 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.1.0
-Release:	0.1
+Version:	3.2.1
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	14a532a7538551d5def317bfca41dace
+# Source0-md5:	94d3a8148c35cedd2db953245e057a67
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
+Patch1:		fix-macro-redefinitions.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.9
@@ -204,6 +205,7 @@ opisów buforów protokołowych (Protocol Buffers).
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 ln -s /usr/src/gmock/src/gmock*.cc src
 
@@ -288,17 +290,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.11
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.12
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.11
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.12
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.11
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.12
 
 %files devel
 %defattr(644,root,root,755)
@@ -327,8 +329,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc python/README.md
 %dir %{py_sitescriptdir}/google
 %{py_sitescriptdir}/google/protobuf
-%{py_sitescriptdir}/protobuf-%{version}-py*.egg-info
-%{py_sitescriptdir}/protobuf-%{version}-py*-nspkg.pth
+%{py_sitescriptdir}/protobuf-*-py*.egg-info
+%{py_sitescriptdir}/protobuf-*-py*-nspkg.pth
 %endif
 
 %if %{with python3}
@@ -337,8 +339,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc python/README.md
 %dir %{py3_sitescriptdir}/google
 %{py3_sitescriptdir}/google/protobuf
-%{py3_sitescriptdir}/protobuf-%{version}-py*.egg-info
-%{py3_sitescriptdir}/protobuf-%{version}-py*-nspkg.pth
+%{py3_sitescriptdir}/protobuf-*-py*.egg-info
+%{py3_sitescriptdir}/protobuf-*-py*-nspkg.pth
 %endif
 
 %if %{with ruby}
