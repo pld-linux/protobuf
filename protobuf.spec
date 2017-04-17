@@ -9,6 +9,10 @@
 %bcond_without	ruby	# Ruby bindings
 %bcond_without	tests	# perform "make check"
 
+%ifarch x32
+%undefine with_ruby
+%endif
+
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
