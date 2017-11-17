@@ -1,6 +1,6 @@
---- protobuf-3.1.0/autogen.sh.orig	2016-12-29 21:02:59.643624708 +0100
-+++ protobuf-3.1.0/autogen.sh	2016-12-29 21:03:02.716958006 +0100
-@@ -27,21 +27,6 @@
+--- protobuf-3.5.0/autogen.sh.orig	2017-11-17 17:49:36.389442867 +0100
++++ protobuf-3.5.0/autogen.sh	2017-11-17 17:51:03.439441874 +0100
+@@ -27,23 +27,6 @@
    exit 1
  fi
  
@@ -12,7 +12,9 @@
 -  unzip -q release-1.7.0.zip
 -  rm release-1.7.0.zip
 -  mv googlemock-release-1.7.0 gmock
+-fi
 -
+-if test ! -e gmock/gtest; then
 -  curl $curlopts -L -O https://github.com/google/googletest/archive/release-1.7.0.zip
 -  unzip -q release-1.7.0.zip
 -  rm release-1.7.0.zip
@@ -54,9 +56,9 @@
  	  echo "Making clean in conformance"; \
  	  cd conformance && $(MAKE) $(AM_MAKEFLAGS) clean; \
  	fi; \
---- protobuf-3.3.0/src/Makefile.am.orig	2017-04-27 01:32:21.000000000 +0200
-+++ protobuf-3.3.0/src/Makefile.am	2017-05-27 11:43:16.651910938 +0200
-@@ -744,15 +744,22 @@
+--- protobuf-3.5.0/src/Makefile.am.orig	2017-11-13 19:47:29.000000000 +0100
++++ protobuf-3.5.0/src/Makefile.am	2017-11-17 17:49:36.389442867 +0100
+@@ -756,15 +756,22 @@
    google/protobuf/testing/file.cc                              \
    google/protobuf/testing/file.h
  
@@ -84,7 +86,7 @@
  # Disable optimization for tests unless the user explicitly asked for it,
  # since test_util.cc takes forever to compile with optimization (with GCC).
  # See configure.ac for more info.
-@@ -837,11 +844,11 @@
+@@ -853,11 +860,11 @@
  # Run cpp_unittest again with PROTOBUF_TEST_NO_DESCRIPTORS defined.
  protobuf_lazy_descriptor_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la \
                        libprotoc.la                                   \
@@ -101,7 +103,7 @@
                                           -DPROTOBUF_TEST_NO_DESCRIPTORS
  protobuf_lazy_descriptor_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
  protobuf_lazy_descriptor_test_SOURCES =                        \
-@@ -862,9 +869,9 @@
+@@ -878,9 +885,9 @@
  # full runtime and we want to make sure this test builds without full
  # runtime.
  protobuf_lite_test_LDADD = $(PTHREAD_LIBS) libprotobuf-lite.la \
@@ -114,7 +116,7 @@
  protobuf_lite_test_CPPFLAGS= -I$(srcdir)/../gmock/include \
                               -I$(srcdir)/../gmock/gtest/include
  protobuf_lite_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
-@@ -877,11 +884,11 @@
+@@ -893,11 +900,11 @@
  # gtest when building the test internally our memory sanitizer doesn't detect
  # memory leaks (don't know why).
  protobuf_lite_arena_test_LDADD = $(PTHREAD_LIBS) libprotobuf-lite.la \
@@ -131,7 +133,7 @@
  protobuf_lite_arena_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
  protobuf_lite_arena_test_SOURCES =       \
    google/protobuf/lite_arena_unittest.cc \
-@@ -890,8 +897,8 @@
+@@ -906,8 +913,8 @@
  
  # Test plugin binary.
  test_plugin_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \
@@ -142,16 +144,3 @@
  test_plugin_SOURCES =                                          \
    google/protobuf/compiler/mock_code_generator.cc              \
    google/protobuf/testing/file.cc                              \
-@@ -920,9 +927,9 @@
- 	echo "TEST(NoWarningTest, Empty) {}" >> no_warning_test.cc
- 
- no_warning_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la      \
--                        ../gmock/gtest/lib/libgtest.la      \
--                        ../gmock/gtest/lib/libgtest_main.la
--no_warning_test_CPPFLAGS = -I$(srcdir)/../gmock/gtest/include
-+                        -lgtest      \
-+                        -lgtest_main
-+no_warning_test_CPPFLAGS = -I$(gtest_inc_dir)
- no_warning_test_CXXFLAGS = $(PTHREAD_CFLAGS) $(PTHREAD_DEF) $(ZLIB_DEF) \
-                            -Wall -Werror
- nodist_no_warning_test_SOURCES = no_warning_test.cc $(protoc_outputs)

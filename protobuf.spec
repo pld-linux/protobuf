@@ -16,13 +16,13 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.3.0
+Version:	3.5.0
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	10644296984c7cbdd1e8436e88b069d2
+# Source0-md5:	d95db321e1a9901fffc51ed8994afd36
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 URL:		https://github.com/google/protobuf/
@@ -292,17 +292,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.13
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.15
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.13
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.15
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.13
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.15
 
 %files devel
 %defattr(644,root,root,755)
