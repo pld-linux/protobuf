@@ -54,9 +54,9 @@
  	  echo "Making clean in conformance"; \
  	  cd conformance && $(MAKE) $(AM_MAKEFLAGS) clean; \
  	fi; \
---- protobuf-3.1.0/src/Makefile.am.orig	2016-12-29 21:01:17.820292537 +0100
-+++ protobuf-3.1.0/src/Makefile.am	2016-12-29 21:32:14.440271338 +0100
-@@ -693,15 +693,22 @@
+--- protobuf-3.3.0/src/Makefile.am.orig	2017-04-27 01:32:21.000000000 +0200
++++ protobuf-3.3.0/src/Makefile.am	2017-05-27 11:43:16.651910938 +0200
+@@ -744,15 +744,22 @@
    google/protobuf/testing/file.cc                              \
    google/protobuf/testing/file.h
  
@@ -84,7 +84,7 @@
  # Disable optimization for tests unless the user explicitly asked for it,
  # since test_util.cc takes forever to compile with optimization (with GCC).
  # See configure.ac for more info.
-@@ -784,11 +790,11 @@
+@@ -837,11 +844,11 @@
  # Run cpp_unittest again with PROTOBUF_TEST_NO_DESCRIPTORS defined.
  protobuf_lazy_descriptor_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la \
                        libprotoc.la                                   \
@@ -101,7 +101,20 @@
                                           -DPROTOBUF_TEST_NO_DESCRIPTORS
  protobuf_lazy_descriptor_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
  protobuf_lazy_descriptor_test_SOURCES =                        \
-@@ -819,11 +825,11 @@
+@@ -862,9 +869,9 @@
+ # full runtime and we want to make sure this test builds without full
+ # runtime.
+ protobuf_lite_test_LDADD = $(PTHREAD_LIBS) libprotobuf-lite.la \
+-                           ../gmock/gtest/lib/libgtest.la      \
+-                           ../gmock/lib/libgmock.la            \
+-                           ../gmock/lib/libgmock_main.la
++                           -lgtest      \
++                           libgmock_main.la            \
++                           libgmock.la
+ protobuf_lite_test_CPPFLAGS= -I$(srcdir)/../gmock/include \
+                              -I$(srcdir)/../gmock/gtest/include
+ protobuf_lite_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
+@@ -877,11 +884,11 @@
  # gtest when building the test internally our memory sanitizer doesn't detect
  # memory leaks (don't know why).
  protobuf_lite_arena_test_LDADD = $(PTHREAD_LIBS) libprotobuf-lite.la \
@@ -118,7 +131,7 @@
  protobuf_lite_arena_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
  protobuf_lite_arena_test_SOURCES =       \
    google/protobuf/lite_arena_unittest.cc \
-@@ -832,8 +838,8 @@
+@@ -890,8 +897,8 @@
  
  # Test plugin binary.
  test_plugin_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \
@@ -129,7 +142,7 @@
  test_plugin_SOURCES =                                          \
    google/protobuf/compiler/mock_code_generator.cc              \
    google/protobuf/testing/file.cc                              \
-@@ -862,9 +868,9 @@
+@@ -920,9 +927,9 @@
  	echo "TEST(NoWarningTest, Empty) {}" >> no_warning_test.cc
  
  no_warning_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la      \
