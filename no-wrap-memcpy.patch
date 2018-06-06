@@ -1,0 +1,21 @@
+--- protobuf-3.5.1.1/ruby/ext/google/protobuf_c/extconf.rb~	2018-01-05 22:42:10.000000000 +0100
++++ protobuf-3.5.1.1/ruby/ext/google/protobuf_c/extconf.rb	2018-06-06 08:25:28.643970843 +0200
+@@ -2,16 +2,10 @@
+ 
+ require 'mkmf'
+ 
+-$CFLAGS += " -std=c99 -O3 -DNDEBUG"
++$CFLAGS += " -std=c99 -DNDEBUG"
+ 
+ 
+-if RUBY_PLATFORM =~ /linux/
+-  # Instruct the linker to point memcpy calls at our __wrap_memcpy wrapper.
+-  $LDFLAGS += " -Wl,-wrap,memcpy"
+-end
+-
+ $objs = ["protobuf.o", "defs.o", "storage.o", "message.o",
+-         "repeated_field.o", "map.o", "encode_decode.o", "upb.o",
+-         "wrap_memcpy.o"]
++         "repeated_field.o", "map.o", "encode_decode.o", "upb.o"]
+ 
+ create_makefile("google/protobuf_c")

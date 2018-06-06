@@ -9,15 +9,11 @@
 %bcond_without	ruby	# Ruby bindings
 %bcond_without	tests	# perform "make check"
 
-%ifarch x32
-%undefine with_ruby
-%endif
-
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	3.5.1.1
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
@@ -25,6 +21,7 @@ Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{versio
 # Source0-md5:	5005003ae6b94773c4bbca87a644b131
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
+Patch1:		no-wrap-memcpy.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.9
@@ -208,6 +205,7 @@ opisów buforów protokołowych (Protocol Buffers).
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 ln -s /usr/src/gmock/src/gmock*.cc src
 
