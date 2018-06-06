@@ -205,9 +205,7 @@ opisów buforów protokołowych (Protocol Buffers).
 %prep
 %setup -q
 %patch0 -p1
-%ifarch x32
 %patch1 -p1
-%endif
 
 ln -s /usr/src/gmock/src/gmock*.cc src
 
