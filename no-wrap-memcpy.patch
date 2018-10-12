@@ -1,11 +1,12 @@
---- protobuf-3.5.1.1/ruby/ext/google/protobuf_c/extconf.rb~	2018-01-05 22:42:10.000000000 +0100
-+++ protobuf-3.5.1.1/ruby/ext/google/protobuf_c/extconf.rb	2018-06-06 08:25:28.643970843 +0200
-@@ -2,16 +2,10 @@
- 
+--- protobuf-3.6.1/ruby/ext/google/protobuf_c/extconf.rb.orig	2018-10-12 18:23:59.206483460 +0200
++++ protobuf-3.6.1/ruby/ext/google/protobuf_c/extconf.rb	2018-10-12 18:42:35.729804045 +0200
+@@ -3,17 +3,11 @@
  require 'mkmf'
  
--$CFLAGS += " -std=c99 -O3 -DNDEBUG"
-+$CFLAGS += " -std=c99 -DNDEBUG"
+ unless RUBY_PLATFORM =~ /mswin|mingw/
+-  $CFLAGS += " -std=c99 -O3 -DNDEBUG"
++  $CFLAGS += " -std=c99 -DNDEBUG"
+ end
  
  
 -if RUBY_PLATFORM =~ /linux/
