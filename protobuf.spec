@@ -12,13 +12,13 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.6.1
+Version:	3.7.0
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	e8ce2659ea4f5df1a1e0dbd107dd61d9
+# Source0-md5:	99ab003ca0e98c9dc40edbd60dd43633
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 Patch1:		no-wrap-memcpy.patch
@@ -271,7 +271,7 @@ install ruby/lib/google/protobuf_c.so $RPM_BUILD_ROOT%{ruby_vendorarchdir}/googl
 cp -pr ruby/lib/google/{protobuf,protobuf.rb} $RPM_BUILD_ROOT%{ruby_vendorlibdir}/google
 cp -p ruby/google-protobuf.gemspec $RPM_BUILD_ROOT%{ruby_specdir}/google-protobuf-%{version}.gemspec
 %endif
-cp -p examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -pr examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -290,17 +290,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.17
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.18
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.17
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.18
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.17
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.18
 
 %files devel
 %defattr(644,root,root,755)

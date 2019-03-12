@@ -1,22 +1,25 @@
---- protobuf-3.6.1/ruby/ext/google/protobuf_c/extconf.rb.orig	2018-10-12 18:23:59.206483460 +0200
-+++ protobuf-3.6.1/ruby/ext/google/protobuf_c/extconf.rb	2018-10-12 18:42:35.729804045 +0200
-@@ -3,17 +3,11 @@
- require 'mkmf'
- 
- unless RUBY_PLATFORM =~ /mswin|mingw/
+--- protobuf-3.7.0/ruby/ext/google/protobuf_c/extconf.rb	2019-03-12 12:41:06.025000000 +0100
++++ protobuf-3.7.0/ruby/ext/google/protobuf_c/extconf.rb	2019-03-12 12:42:04.062000000 +0100
+@@ -5,19 +5,12 @@
+ if RUBY_PLATFORM =~ /darwin/ || RUBY_PLATFORM =~ /linux/
+   # XOPEN_SOURCE needed for strptime:
+   # https://stackoverflow.com/questions/35234152/strptime-giving-implicit-declaration-and-undefined-reference
+-  $CFLAGS += " -std=c99 -O3 -DNDEBUG -D_XOPEN_SOURCE=700"
++  $CFLAGS += " -std=c99 -DNDEBUG -D_XOPEN_SOURCE=700"
+ else
 -  $CFLAGS += " -std=c99 -O3 -DNDEBUG"
-+  $CFLAGS += " -std=c99 -DNDEBUG"
- end
- 
- 
+-end
+-
+-
 -if RUBY_PLATFORM =~ /linux/
 -  # Instruct the linker to point memcpy calls at our __wrap_memcpy wrapper.
 -  $LDFLAGS += " -Wl,-wrap,memcpy"
--end
--
++  $CFLAGS += " -std=c99 -DNDEBUG"
+ end
+ 
  $objs = ["protobuf.o", "defs.o", "storage.o", "message.o",
 -         "repeated_field.o", "map.o", "encode_decode.o", "upb.o",
 -         "wrap_memcpy.o"]
-+         "repeated_field.o", "map.o", "encode_decode.o", "upb.o"]
++         "repeated_field.o", "map.o", "encode_decode.o", "upb.o" ]
  
  create_makefile("google/protobuf_c")
