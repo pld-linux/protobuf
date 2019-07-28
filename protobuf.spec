@@ -12,21 +12,21 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.7.0
-Release:	2
+Version:	3.9.0
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
-Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	99ab003ca0e98c9dc40edbd60dd43633
+Source0:	https://github.com/google/protobuf/releases/download/v%{version}/%{name}-all-%{version}.tar.gz
+# Source0-md5:	a44c3bbee380181c86f573b835294782
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 Patch1:		no-wrap-memcpy.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.9
-%{?with_tests:BuildRequires:	gmock-devel}
-%{?with_tests:BuildRequires:	gtest-devel}
+#%{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
+#%{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
@@ -204,10 +204,14 @@ opisów buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q
-%patch0 -p1
+# protobuf needs gtest 1.9.0 (not released yet), use bundled version
+#patch0 -p1
 %patch1 -p1
 
-ln -s /usr/src/gmock/src/gmock*.cc src
+#ln -s /usr/src/gmock/src/gmock*.cc src
+
+# remove for gtest >= 1.9
+#%{__sed} -i -e 's/INSTANTIATE_TEST_SUITE_P/INSTANTIATE_TEST_CASE_P/' src/google/protobuf/{compiler/command_line_interface_unittest.cc,descriptor_unittest.cc,dynamic_message_unittest.cc,map_field_test.cc,util/internal/default_value_objectwriter_test.cc,util/internal/protostream_objectsource_test.cc,util/internal/protostream_objectwriter_test.cc}
 
 %build
 %{__libtoolize}
@@ -218,7 +222,9 @@ ln -s /usr/src/gmock/src/gmock*.cc src
 # Additional variables defined according to https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=192821
 %configure \
 	CFLAGS='%{rpmcflags} -DGOOGLE_PROTOBUF_NO_RTTI' \
-	CPPFLAGS='%{rpmcppflags} -DGOOGLE_PROTOBUF_NO_RTTI'
+	CPPFLAGS='%{rpmcppflags} -DGOOGLE_PROTOBUF_NO_RTTI' \
+	--disable-silent-rules \
+	--disable-external-gtest
 %{__make}
 
 cd python
@@ -290,17 +296,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.18
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.20
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.18
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.20
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.18
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.20
 
 %files devel
 %defattr(644,root,root,755)
