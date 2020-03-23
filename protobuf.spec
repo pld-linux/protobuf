@@ -13,7 +13,7 @@ Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	3.9.0
-Release:	2
+Release:	3
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
@@ -212,6 +212,10 @@ opisów buforów protokołowych (Protocol Buffers).
 
 # remove for gtest >= 1.9
 #%{__sed} -i -e 's/INSTANTIATE_TEST_SUITE_P/INSTANTIATE_TEST_CASE_P/' src/google/protobuf/{compiler/command_line_interface_unittest.cc,descriptor_unittest.cc,dynamic_message_unittest.cc,map_field_test.cc,util/internal/default_value_objectwriter_test.cc,util/internal/protostream_objectsource_test.cc,util/internal/protostream_objectwriter_test.cc}
+
+%{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
+      examples/add_person.py \
+      examples/list_people.py
 
 %build
 %{__libtoolize}
