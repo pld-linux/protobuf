@@ -12,21 +12,21 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.12.1
+Version:	3.13.0
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
 Source0:	https://github.com/google/protobuf/releases/download/v%{version}/%{name}-all-%{version}.tar.gz
-# Source0-md5:	fac64fc43aaf4529e394508e2fa86ad5
+# Source0-md5:	cafa623d51361228c83c874d95f51992
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 Patch1:		no-wrap-memcpy.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.9
-#%{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
-#%{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
+%{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
+%{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
@@ -204,14 +204,8 @@ opisów buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q
-# protobuf needs gtest 1.9.0 (not released yet), use bundled version
-#patch0 -p1
+%patch0 -p1
 %patch1 -p1
-
-#ln -s /usr/src/gmock/src/gmock*.cc src
-
-# remove for gtest >= 1.9
-#%{__sed} -i -e 's/INSTANTIATE_TEST_SUITE_P/INSTANTIATE_TEST_CASE_P/' src/google/protobuf/{compiler/command_line_interface_unittest.cc,descriptor_unittest.cc,dynamic_message_unittest.cc,map_field_test.cc,util/internal/default_value_objectwriter_test.cc,util/internal/protostream_objectsource_test.cc,util/internal/protostream_objectwriter_test.cc}
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
       examples/add_person.py \
@@ -300,17 +294,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.23
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.24
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.23
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.24
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.23
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.24
 
 %files devel
 %defattr(644,root,root,755)
