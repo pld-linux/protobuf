@@ -13,7 +13,7 @@ Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	3.13.0
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
@@ -22,6 +22,7 @@ Source0:	https://github.com/google/protobuf/releases/download/v%{version}/%{name
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 Patch1:		no-wrap-memcpy.patch
+Patch2:		%{name}-no-wheel.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.9
@@ -31,7 +32,7 @@ BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 %if %{with python2}
-BuildRequires:	python-modules >= 1:2.6
+BuildRequires:	python-modules >= 1:2.7
 BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
@@ -154,7 +155,7 @@ Statyczne biblioteki buforów protokołowych (Protocol Buffers).
 Summary:	Python 2 bindings for Protocol Buffers
 Summary(pl.UTF-8):	Wiązania Pythona 2 do buforów protokołowych (Protocol Buffers)
 Group:		Development/Languages/Python
-Requires:	python-modules >= 1:2.6
+Requires:	python-modules >= 1:2.7
 # does not use C++ library at this time
 
 %description -n python-protobuf
@@ -206,6 +207,7 @@ opisów buforów protokołowych (Protocol Buffers).
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
       examples/add_person.py \
