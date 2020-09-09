@@ -13,7 +13,7 @@ Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	3.13.0
-Release:	2
+Release:	3
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
@@ -48,6 +48,7 @@ BuildRequires:	ruby-devel
 BuildRequires:	ruby-rake
 BuildRequires:	ruby-rake-compiler
 %endif
+BuildRequires:	sed >= 4.0
 BuildRequires:	zlib-devel >= 1.2.0.4
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -212,6 +213,15 @@ opisów buforów protokołowych (Protocol Buffers).
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
       examples/add_person.py \
       examples/list_people.py
+
+# gcc 10.2 false positive warning (with tag values >= 128):
+#
+#  if (tag < 128) {
+#    return *ptr == tag;
+#           ~~~~~^~~~~~ error: comparison is always false due to limited range of data type [-Werror=type-limits]
+#  } else {
+#
+%{__sed} -i -e 's/-Werror //' src/Makefile.am
 
 %build
 %{__libtoolize}
