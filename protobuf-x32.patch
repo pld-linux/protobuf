@@ -1,0 +1,13 @@
+Bucket selection is based on higher 32 bits of seed, which is 64-bit wide only on LP64 platforms.
+
+--- protobuf-3.13.0/src/google/protobuf/map_test.cc.orig	2020-08-15 01:24:06.000000000 +0200
++++ protobuf-3.13.0/src/google/protobuf/map_test.cc	2020-09-10 06:16:47.150949801 +0200
+@@ -1005,7 +1005,7 @@
+ // small maps. Currently we only have sufficient randomness for debug builds and
+ // builds where we can use the RDTSC instruction, so we only test for those
+ // builds.
+-#if defined(__x86_64__) && defined(__GNUC__) && \
++#if defined(__x86_64__) && defined(__LP64__) && defined(__GNUC__) && \
+     !defined(GOOGLE_PROTOBUF_NO_RDTSC)
+ TEST_F(MapImplTest, RandomOrdering) {
+   for (int i = 0; i < 10; ++i) {
