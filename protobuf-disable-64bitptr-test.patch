@@ -1,0 +1,23 @@
+--- protobuf-3.14.0/src/google/protobuf/io/zero_copy_stream_unittest.cc.orig	2020-11-13 23:55:22.000000000 +0100
++++ protobuf-3.14.0/src/google/protobuf/io/zero_copy_stream_unittest.cc	2021-01-18 21:39:55.771550717 +0100
+@@ -712,20 +712,6 @@
+   }
+ }
+ 
+-// Verifies that outputs up to kint32max can be created.
+-TEST_F(IoTest, LargeOutput) {
+-  std::string str;
+-  StringOutputStream output(&str);
+-  void* unused_data;
+-  int size;
+-  // Repeatedly calling Next should eventually grow the buffer to kint32max.
+-  do {
+-    EXPECT_TRUE(output.Next(&unused_data, &size));
+-  } while (str.size() < std::numeric_limits<int>::max());
+-  // Further increases should be possible.
+-  output.Next(&unused_data, &size);
+-  EXPECT_GT(size, 0);
+-}
+ 
+ 
+ // To test files, we create a temporary file, write, read, truncate, repeat.

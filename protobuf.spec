@@ -7,23 +7,23 @@
 %bcond_without	python2	# Python 2.x bindings
 %bcond_without	python3	# Python 3.x bindings
 %bcond_without	ruby	# Ruby bindings
-%bcond_without	tests	# perform "make check"
+%bcond_without	tests	# perform "make check" (requires 4+GB RAM on 64-bit archs)
 
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.13.0
-Release:	3
+Version:	3.14.0
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
 Source0:	https://github.com/google/protobuf/releases/download/v%{version}/%{name}-all-%{version}.tar.gz
-# Source0-md5:	cafa623d51361228c83c874d95f51992
+# Source0-md5:	d0a7dd930210af5285c08c8a2c2304ab
 Source1:	ftdetect-proto.vim
 Patch0:		system-gtest.patch
 Patch1:		no-wrap-memcpy.patch
-Patch2:		%{name}-no-wheel.patch
-Patch3:		%{name}-x32.patch
+Patch2:		%{name}-x32.patch
+Patch3:		%{name}-disable-64bitptr-test.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.9
@@ -211,7 +211,9 @@ opisów buforów protokołowych (Protocol Buffers).
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%ifnarch %{x8664} aarch64 alpha ia64 mips64 ppc64 s390x sparc64
 %patch3 -p1
+%endif
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
       examples/add_person.py \
@@ -309,17 +311,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.24
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.25
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.24
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.25
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.24
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.25
 
 %files devel
 %defattr(644,root,root,755)
