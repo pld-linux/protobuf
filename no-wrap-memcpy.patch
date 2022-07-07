@@ -1,6 +1,6 @@
 --- protobuf-3.17.3/ruby/ext/google/protobuf_c/extconf.rb~	2020-02-14 21:13:37.000000000 +0100
 +++ protobuf-3.17.3/ruby/ext/google/protobuf_c/extconf.rb	2020-04-07 22:56:24.419874091 +0200
-@@ -3,15 +3,15 @@
+@@ -3,19 +3,19 @@
  require 'mkmf'
  
  if RUBY_PLATFORM =~ /darwin/ || RUBY_PLATFORM =~ /linux/
@@ -19,3 +19,8 @@
  end
  
  $objs = ["protobuf.o", "convert.o", "defs.o", "message.o",
+-         "repeated_field.o", "map.o", "ruby-upb.o", "wrap_memcpy.o"]
++         "repeated_field.o", "map.o", "ruby-upb.o"]
+ 
+ find_header('third_party/wyhash/wyhash.h', '../../../..')
+ create_makefile("google/protobuf_c")
