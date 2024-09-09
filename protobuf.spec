@@ -4,7 +4,6 @@
 # - add bindings for csharp
 #
 # Conditional build:
-%bcond_without	python2	# Python 2.x bindings
 %bcond_without	python3	# Python 3.x bindings
 %bcond_without	ruby	# Ruby bindings
 %bcond_without	tests	# perform "make check" (requires 4+GB RAM on 64-bit archs)
@@ -12,36 +11,32 @@
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.17.3
+Version:	3.20.3
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
 Source0:	https://github.com/google/protobuf/releases/download/v%{version}/%{name}-all-%{version}.tar.gz
-# Source0-md5:	689cac84577732d00dfec6e3d5b87cee
+# Source0-md5:	a1e8f594f998576180ff1efa49007f54
 Source1:	ftdetect-proto.vim
+Source2:	https://github.com/protocolbuffers/utf8_range/archive/1d1ea7e3fedf482d4a12b473c1ed25fe0f371a45/utf8_range-20231110.tar.gz
+# Source2-md5:	3ee3e8809236fbac057b26e502afe4cb
 Patch0:		system-gtest.patch
 Patch1:		no-wrap-memcpy.patch
 Patch2:		%{name}-x32.patch
-Patch3:		%{name}-disable-64bitptr-test.patch
+Patch3:		%{name}-32bit.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
-BuildRequires:	automake >= 1:1.9
+BuildRequires:	automake >= 1:1.11
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
 %{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
-%if %{with python2}
-BuildRequires:	python-modules >= 1:2.7
-BuildRequires:	python-setuptools
-%endif
 %if %{with python3}
 BuildRequires:	python3-modules >= 1:3.3
 BuildRequires:	python3-setuptools
-%endif
-%if %{with python2} || %{with python3}
 BuildRequires:	rpm-pythonprov
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.714
@@ -209,17 +204,19 @@ Ten pakiet zawiera pliki podświetlania składni edytora Vim dla
 opisów buforów protokołowych (Protocol Buffers).
 
 %prep
-%setup -q
+%setup -q -a2
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%ifnarch %{x8664} aarch64 alpha ia64 mips64 ppc64 s390x sparc64
+#%ifnarch %{x8664} aarch64 alpha ia64 mips64 ppc64 s390x sparc64
 %patch3 -p1
-%endif
+#%endif
 
-%{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
-      examples/add_person.py \
-      examples/list_people.py
+%{__mv} utf8_range-* third_party/utf8_range
+
+%{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' \
+	examples/add_person.py \
+	examples/list_people.py
 
 # gcc 10.2 false positive warning (with tag values >= 128):
 #
@@ -228,7 +225,7 @@ opisów buforów protokołowych (Protocol Buffers).
 #           ~~~~~^~~~~~ error: comparison is always false due to limited range of data type [-Werror=type-limits]
 #  } else {
 #
-%{__sed} -i -e 's/-Werror //' src/Makefile.am
+#%{__sed} -i -e 's/-Werror //' src/Makefile.am
 
 %ifarch %{ix86} x32
 # fail due to memory space limit or some unexpected allocation sizes(?)
@@ -251,9 +248,6 @@ opisów buforów protokołowych (Protocol Buffers).
 %{__make}
 
 cd python
-%if %{with python2}
-%py_build
-%endif
 %if %{with python3}
 %py3_build
 %endif
@@ -285,10 +279,6 @@ cp -p editors/proto.vim $RPM_BUILD_ROOT%{_vimdatadir}/syntax/proto.vim
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_vimdatadir}/ftdetect/proto.vim
 
 cd python
-%if %{with python2}
-%py_install
-%py_postclean
-%endif
 %if %{with python3}
 %py3_install
 %endif
@@ -319,17 +309,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
 %attr(755,root,root) %{_bindir}/protoc
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.28
+%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.31
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.28
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.31
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.28
+%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.31
 
 %files devel
 %defattr(644,root,root,755)
@@ -351,16 +341,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libprotobuf-lite.a
 %{_libdir}/libprotobuf.a
 %{_libdir}/libprotoc.a
-
-%if %{with python2}
-%files -n python-protobuf
-%defattr(644,root,root,755)
-%doc python/README.md
-%dir %{py_sitescriptdir}/google
-%{py_sitescriptdir}/google/protobuf
-%{py_sitescriptdir}/protobuf-%{version}-py*.egg-info
-%{py_sitescriptdir}/protobuf-%{version}-py*-nspkg.pth
-%endif
 
 %if %{with python3}
 %files -n python3-protobuf
