@@ -12,7 +12,7 @@ Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	3.20.3
-Release:	1
+Release:	
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
