@@ -12,7 +12,7 @@ Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
 Version:	3.20.3
-Release:	
+Release:	2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
@@ -200,16 +200,16 @@ This package contains syntax highlighting for Protocol Buffers
 descriptions in Vim editor.
 
 %description -n vim-syntax-protobuf -l pl.UTF-8
-Ten pakiet zawiera pliki podświetlania składni edytora Vim dla
-opisów buforów protokołowych (Protocol Buffers).
+Ten pakiet zawiera pliki podświetlania składni edytora Vim dla opisów
+buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q -a2
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
 #%ifnarch %{x8664} aarch64 alpha ia64 mips64 ppc64 s390x sparc64
-%patch3 -p1
+%patch -P 3 -p1
 #%endif
 
 %{__mv} utf8_range-* third_party/utf8_range
