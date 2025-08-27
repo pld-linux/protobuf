@@ -25,6 +25,7 @@ Patch0:		system-gtest.patch
 Patch1:		no-wrap-memcpy.patch
 Patch2:		%{name}-x32.patch
 Patch3:		%{name}-32bit.patch
+Patch4:		musttail.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.11
@@ -211,6 +212,7 @@ buforów protokołowych (Protocol Buffers).
 #%ifnarch %{x8664} aarch64 alpha ia64 mips64 ppc64 s390x sparc64
 %patch -P 3 -p1
 #%endif
+%patch -P 4 -p1
 
 %{__mv} utf8_range-* third_party/utf8_range
 
