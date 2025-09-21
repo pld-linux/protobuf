@@ -250,6 +250,12 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# Remove utf8_range that's statically linked and not needed.
+%{__rm} $RPM_BUILD_ROOT%{_includedir}/{utf8_range,utf8_validity}.h
+%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/cmake/utf8_range
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libutf8_{range,validity}.a
+%{__rm} $RPM_BUILD_ROOT%{_pkgconfigdir}/utf8_range.pc
+
 install -d $RPM_BUILD_ROOT%{_vimdatadir}/{syntax,ftdetect}
 cp -p editors/proto.vim $RPM_BUILD_ROOT%{_vimdatadir}/syntax/proto.vim
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_vimdatadir}/ftdetect/proto.vim
