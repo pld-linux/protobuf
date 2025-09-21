@@ -20,8 +20,6 @@ Group:		Libraries
 Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	6da0bf008ca0354c4a4c626795b81abd
 Source1:	ftdetect-proto.vim
-Source2:	https://github.com/protocolbuffers/utf8_range/archive/1d1ea7e3fedf482d4a12b473c1ed25fe0f371a45/utf8_range-20231110.tar.gz
-# Source2-md5:	3ee3e8809236fbac057b26e502afe4cb
 Patch0:		python-no-broken-tests.patch
 Patch1:		no-utf8_range-pkgconfig.patch
 URL:		https://github.com/google/protobuf/
@@ -201,11 +199,9 @@ Ten pakiet zawiera pliki podświetlania składni edytora Vim dla opisów
 buforów protokołowych (Protocol Buffers).
 
 %prep
-%setup -q -a2
+%setup -q
 %patch -P0 -p1
 %patch -P1 -p1
-
-#{__mv} utf8_range-* third_party/utf8_range
 
 %{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' \
 	examples/add_person.py \
