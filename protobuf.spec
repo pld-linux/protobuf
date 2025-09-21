@@ -4,35 +4,31 @@
 # - add bindings for csharp
 #
 # Conditional build:
-%bcond_without	python3	# Python 3.x bindings
-%bcond_without	ruby	# Ruby bindings
-%bcond_without	tests	# perform "make check" (requires 4+GB RAM on 64-bit archs)
+%bcond_without	python3		# Python 3.x bindings
+%bcond_with	ruby		# Ruby bindings
+%bcond_without	tests		# perform "make check" (requires 4+GB RAM on 64-bit archs)
+%bcond_with	static_libs	# Ruby bindings
 
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
-Version:	3.20.3
-Release:	3
+Version:	4.25.8
+Release:	0.1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/google/protobuf/releases
-Source0:	https://github.com/google/protobuf/releases/download/v%{version}/%{name}-all-%{version}.tar.gz
-# Source0-md5:	a1e8f594f998576180ff1efa49007f54
+Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	6da0bf008ca0354c4a4c626795b81abd
 Source1:	ftdetect-proto.vim
 Source2:	https://github.com/protocolbuffers/utf8_range/archive/1d1ea7e3fedf482d4a12b473c1ed25fe0f371a45/utf8_range-20231110.tar.gz
 # Source2-md5:	3ee3e8809236fbac057b26e502afe4cb
-Patch0:		system-gtest.patch
-Patch1:		no-wrap-memcpy.patch
-Patch2:		%{name}-x32.patch
-Patch3:		%{name}-32bit.patch
-Patch4:		musttail.patch
+Patch0:		python-no-broken-tests.patch
+Patch1:		no-utf8_range-pkgconfig.patch
 URL:		https://github.com/google/protobuf/
-BuildRequires:	autoconf >= 2.59
-BuildRequires:	automake >= 1:1.11
+BuildRequires:	abseil-cpp-devel >= 20250814.0
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
 %{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
 BuildRequires:	libstdc++-devel >= 6:4.7
-BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
 %if %{with python3}
@@ -53,8 +49,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_vimdatadir	%{_datadir}/vim
 
-# triggers bogus "overflow in constant expression" errors with gcc 4.9 .. 5.4
-%define		filterout	-fwrapv
+# False negative _ZN6google8protobuf8internal15ThreadSafeArena13thread_cache_E
+%define		skip_post_check_so libprotoc.so.*
 
 %description
 Protocol Buffers are a way of encoding structured data in an efficient
@@ -206,50 +202,29 @@ buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q -a2
-%patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
-#%ifnarch %{x8664} aarch64 alpha ia64 mips64 ppc64 s390x sparc64
-%patch -P 3 -p1
-#%endif
-%patch -P 4 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 
-%{__mv} utf8_range-* third_party/utf8_range
+#{__mv} utf8_range-* third_party/utf8_range
 
 %{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' \
 	examples/add_person.py \
 	examples/list_people.py
 
-# gcc 10.2 false positive warning (with tag values >= 128):
-#
-#  if (tag < 128) {
-#    return *ptr == tag;
-#           ~~~~~^~~~~~ error: comparison is always false due to limited range of data type [-Werror=type-limits]
-#  } else {
-#
-#%{__sed} -i -e 's/-Werror //' src/Makefile.am
-
-%ifarch %{ix86} x32
-# fail due to memory space limit or some unexpected allocation sizes(?)
-%{__sed} -i -e '/^TEST/ s/AnyTest, TestPackFromSerializationExceedsSizeLimit/DISABLED_&/' src/google/protobuf/any_test.cc
-%{__sed} -i -e '/^TEST/ s/ArenaTest, \(SpaceAllocated_and_Used\|BlockSizeSmallerThanAllocation\)/DISABLED_&/' src/google/protobuf/arena_unittest.cc
-%endif
+%{__sed} -i -e '1s,/usr/bin/env ruby$,%{__ruby},' \
+	examples/add_person.rb \
+	examples/list_people.rb
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-# Additional variables defined according to https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=192821
-%configure \
-	CFLAGS='%{rpmcflags} -DGOOGLE_PROTOBUF_NO_RTTI' \
-	CPPFLAGS='%{rpmcppflags} -DGOOGLE_PROTOBUF_NO_RTTI' \
-	--disable-silent-rules \
-	--disable-external-gtest
+mkdir -p build
+cd build
+%cmake ../ \
+	-Dprotobuf_USE_EXTERNAL_GTEST=ON \
+	-Dprotobuf_ABSL_PROVIDER=package
+
 %{__make}
 
-cd python
+cd ../python
 %if %{with python3}
 %py3_build
 %endif
@@ -263,17 +238,14 @@ cd ..
 %endif
 
 %if %{with tests}
-%{__make} check
+%{__make} -C build test
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
-%{__make} install \
-	STRIPBINARIES=no \
-	INSTALL="install -p"  \
-	CPPROG="cp -p" \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_vimdatadir}/{syntax,ftdetect}
@@ -308,41 +280,38 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES.txt CONTRIBUTORS.txt LICENSE README.md
-%attr(755,root,root) %{_bindir}/protoc
+%doc CONTRIBUTORS.txt LICENSE README.md
+%attr(755,root,root) %{_bindir}/protoc*
 %attr(755,root,root) %{_libdir}/libprotoc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotoc.so.31
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf.so.31
 
 %files lite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libprotobuf-lite.so.31
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libprotobuf-lite.so
 %attr(755,root,root) %{_libdir}/libprotobuf.so
 %attr(755,root,root) %{_libdir}/libprotoc.so
-%{_libdir}/libprotobuf-lite.la
-%{_libdir}/libprotobuf.la
-%{_libdir}/libprotoc.la
 # XXX: dir shared with libtcmalloc
 %dir %{_includedir}/google
 %{_includedir}/google/protobuf
 %{_pkgconfigdir}/protobuf-lite.pc
 %{_pkgconfigdir}/protobuf.pc
+/usr/lib64/cmake/protobuf
 %{_examplesdir}/%{name}-%{version}
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libprotobuf-lite.a
 %{_libdir}/libprotobuf.a
 %{_libdir}/libprotoc.a
+%endif
 
 %if %{with python3}
 %files -n python3-protobuf

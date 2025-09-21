@@ -1,0 +1,11 @@
+--- protobuf-4.25.8/cmake/install.cmake~	2025-05-27 20:57:25.000000000 +0200
++++ protobuf-4.25.8/cmake/install.cmake	2025-09-21 03:06:59.743327120 +0200
+@@ -4,7 +4,7 @@
+   string(REPLACE :: _ _modified_target ${_target})
+   list(APPEND _pc_targets ${_modified_target})
+ endforeach()
+-list(APPEND _pc_targets "utf8_range")
++#list(APPEND _pc_targets "utf8_range")
+ 
+ set(_protobuf_PC_REQUIRES "")
+ set(_sep "")

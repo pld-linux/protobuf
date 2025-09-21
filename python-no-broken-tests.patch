@@ -1,0 +1,11 @@
+--- protobuf-4.25.8/python/setup.py~	2025-05-27 20:57:25.000000000 +0200
++++ protobuf-4.25.8/python/setup.py	2025-09-03 01:22:31.493330110 +0200
+@@ -157,7 +157,7 @@
+     GenProto('../src/google/protobuf/timestamp.proto')
+     GenProto('../src/google/protobuf/type.proto')
+     GenProto('../src/google/protobuf/wrappers.proto')
+-    GenerateUnittestProtos()
++#    GenerateUnittestProtos()
+ 
+     # _build_py is an old-style class, so super() doesn't work.
+     _build_py.run(self)
