@@ -23,6 +23,7 @@ Source1:	ftdetect-proto.vim
 Patch0:		python-no-broken-tests.patch
 Patch1:		no-utf8_range-pkgconfig.patch
 Patch2:		protobuf-x32.patch
+Patch3:		no-death-test.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	abseil-cpp-devel >= 20250814.0
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
@@ -204,6 +205,7 @@ buforów protokołowych (Protocol Buffers).
 %patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
+%patch -P3 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' \
 	examples/add_person.py \
