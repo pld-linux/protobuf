@@ -22,8 +22,9 @@ Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{versio
 Source1:	ftdetect-proto.vim
 Patch0:		python-no-broken-tests.patch
 Patch1:		no-utf8_range-pkgconfig.patch
-Patch2:		protobuf-x32.patch
+Patch2:		%{name}-x32.patch
 Patch3:		no-death-test.patch
+Patch4:		%{name}-32bit.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	abseil-cpp-devel >= 20250814.0
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
@@ -83,7 +84,7 @@ danych, z poziomu różnych języków. Można nawet uaktualniać strukturę
 danych bez psucia programów skompilowanych w oparciu o "stary" format.
 
 Ten pakiet zawiera kompilator buforów protokołowych dla wszystkich
-języków programowania. 
+języków programowania.
 
 %package libs
 Summary:	Protocol Buffers library
@@ -206,6 +207,7 @@ buforów protokołowych (Protocol Buffers).
 %patch -P1 -p1
 %patch -P2 -p1
 %patch -P3 -p1
+%patch -P4 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' \
 	examples/add_person.py \
@@ -260,7 +262,7 @@ cd ..
 
 %if %{with ruby}
 install -d $RPM_BUILD_ROOT{%{ruby_vendorarchdir}/google,%{ruby_vendorlibdir}/google,%{ruby_specdir}}
-install ruby/lib/google/protobuf_c.so $RPM_BUILD_ROOT%{ruby_vendorarchdir}/google
+cp -p ruby/lib/google/protobuf_c.so $RPM_BUILD_ROOT%{ruby_vendorarchdir}/google
 cp -pr ruby/lib/google/{protobuf,protobuf.rb} $RPM_BUILD_ROOT%{ruby_vendorlibdir}/google
 cp -p ruby/google-protobuf.gemspec $RPM_BUILD_ROOT%{ruby_specdir}/google-protobuf-%{version}.gemspec
 %endif
@@ -302,7 +304,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/google/protobuf
 %{_pkgconfigdir}/protobuf-lite.pc
 %{_pkgconfigdir}/protobuf.pc
-/usr/lib64/cmake/protobuf
+%{_libdir}/cmake/protobuf
 %{_examplesdir}/%{name}-%{version}
 
 %if %{with static_libs}
