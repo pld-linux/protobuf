@@ -27,6 +27,7 @@ Patch3:		no-death-test.patch
 Patch4:		%{name}-32bit.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	abseil-cpp-devel >= 20250814.0
+BuildRequires:	cmake >= 3.10
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
 %{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
 BuildRequires:	libstdc++-devel >= 6:4.7
