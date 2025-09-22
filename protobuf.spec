@@ -148,20 +148,6 @@ Static Protocol Buffers libraries.
 %description static -l pl.UTF-8
 Statyczne biblioteki buforów protokołowych (Protocol Buffers).
 
-%package -n python-protobuf
-Summary:	Python 2 bindings for Protocol Buffers
-Summary(pl.UTF-8):	Wiązania Pythona 2 do buforów protokołowych (Protocol Buffers)
-Group:		Development/Languages/Python
-Requires:	python-modules >= 1:2.7
-# does not use C++ library at this time
-BuildArch:	noarch
-
-%description -n python-protobuf
-Python 2 bindings for Protocol Buffers.
-
-%description -n python-protobuf -l pl.UTF-8
-Wiązania Pythona 2 do buforów protokołowych (Protocol Buffers).
-
 %package -n python3-protobuf
 Summary:	Python 3 bindings for Protocol Buffers
 Summary(pl.UTF-8):	Wiązania Pythona 3 do buforów protokołowych (Protocol Buffers)
