@@ -227,6 +227,7 @@ cd build
 
 %{__make}
 
+export PROTOC="$(pwd)/protoc"
 cd ../python
 %if %{with python3}
 %py3_build
