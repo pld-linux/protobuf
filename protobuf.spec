@@ -9,6 +9,7 @@
 %bcond_without	tests		# perform "make check" (requires 4+GB RAM on 64-bit archs)
 %bcond_with	static_libs	# Ruby bindings
 
+%define	abseil_ver	20250814.0
 Summary:	Protocol Buffers - Google's data interchange format
 Summary(pl.UTF-8):	Protocol Buffers - format wymiany danych Google
 Name:		protobuf
@@ -26,7 +27,8 @@ Patch2:		%{name}-x32.patch
 Patch3:		no-death-test.patch
 Patch4:		%{name}-32bit.patch
 URL:		https://github.com/google/protobuf/
-BuildRequires:	abseil-cpp-devel >= 20250814.0
+BuildRequires:	abseil-cpp-devel >= %{abseil_ver}
+%{?with_tests:BuildRequires:	abseil-cpp-test-devel >= %{abseil_ver}}
 BuildRequires:	cmake >= 3.10
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
 %{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
@@ -208,6 +210,7 @@ buforów protokołowych (Protocol Buffers).
 mkdir -p build
 cd build
 %cmake ../ \
+	-Dprotobuf_BUILD_TESTS=%{__ON_OFF tests} \
 	-Dprotobuf_USE_EXTERNAL_GTEST=ON \
 	-Dprotobuf_ABSL_PROVIDER=package
 
