@@ -131,6 +131,9 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-lite = %{version}-%{release}
 Requires:	libstdc++-devel >= 6:4.7
+%if %{without static_libs}
+Obsoletes:	protobuf-static < %{version}-%{release}
+%endif
 
 %description devel
 Header files for Protocol Buffers libraries.
