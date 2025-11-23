@@ -28,7 +28,7 @@ Patch3:		no-death-test.patch
 Patch4:		%{name}-32bit.patch
 URL:		https://github.com/google/protobuf/
 BuildRequires:	abseil-cpp-devel >= %{abseil_ver}
-%{?with_tests:BuildRequires:	abseil-cpp-test-devel >= %{abseil_ver}}
+%{?with_tests:BuildRequires:	abseil-cpp-devel >= %{abseil_ver}}
 BuildRequires:	cmake >= 3.10
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
 %{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
@@ -195,10 +195,10 @@ buforów protokołowych (Protocol Buffers).
 
 %prep
 %setup -q
-%patch -P0 -p1
+#patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
-%patch -P3 -p1
+#patch -P3 -p1
 %patch -P4 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' \
