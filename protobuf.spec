@@ -38,7 +38,7 @@ BuildRequires:	abseil-cpp-devel >= %{abseil_ver}
 BuildRequires:	cmake >= 3.10
 %{?with_tests:BuildRequires:	gmock-devel >= 1.9.0}
 %{?with_tests:BuildRequires:	gtest-devel >= 1.9.0}
-BuildRequires:	libstdc++-devel >= 6:4.7
+BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
 %if %{with python3}
@@ -138,7 +138,8 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-lite = %{version}-%{release}
-Requires:	libstdc++-devel >= 6:4.7
+Requires:	libstdc++-devel >= 6:7
+Requires:	utf8_range-devel = %{version}-%{release}
 Obsoletes:	protobuf-static < %{version}-%{release}
 
 %description devel
