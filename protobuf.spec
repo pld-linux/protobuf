@@ -17,15 +17,15 @@ Version:	4.25.8
 Release:	3
 License:	BSD
 Group:		Libraries
-#Source0Download: https://github.com/google/protobuf/releases
-Source0:	https://github.com/google/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
+#Source0Download: https://github.com/protocolbuffers/protobuf/releases
+Source0:	https://github.com/protocolbuffers/protobuf/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	6da0bf008ca0354c4a4c626795b81abd
 Source1:	ftdetect-proto.vim
 Patch1:		no-utf8_range-pkgconfig.patch
 Patch2:		%{name}-x32.patch
 Patch3:		no-death-test.patch
 Patch4:		%{name}-32bit.patch
-URL:		https://github.com/google/protobuf/
+URL:		https://github.com/protocolbuffers/protobuf/
 BuildRequires:	abseil-cpp-devel >= %{abseil_ver}
 %{?with_tests:BuildRequires:	abseil-cpp-devel >= %{abseil_ver}}
 BuildRequires:	cmake >= 3.10
