@@ -4,7 +4,7 @@
 # - add bindings for csharp
 #
 # Conditional build:
-%bcond_without	python3		# Python 3.x bindings
+%bcond_with	python3		# Python 3.x bindings (built from python3-protobuf.spec; bulding working package from here requires bazel)
 %bcond_with	ruby		# Ruby bindings
 %bcond_without	tests		# test suite (requires 4+GB RAM on 64-bit archs)
 
@@ -42,6 +42,7 @@ BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
 %if %{with python3}
+BuildRequires:	bazel
 BuildRequires:	python3-modules >= 1:3.8
 BuildRequires:	python3-setuptools
 BuildRequires:	rpm-pythonprov
@@ -260,8 +261,6 @@ buforów protokołowych (Protocol Buffers).
 	examples/add_person.rb \
 	examples/list_people.rb
 
-ln -sf dist/setup.py python/setup.py
-
 %build
 mkdir -p build
 cd build
@@ -276,9 +275,7 @@ export PROTOC="$(pwd)/protoc"
 cd ..
 
 %if %{with python3}
-cd python
-%py3_build
-cd ..
+bazel build //python/dist:binary_wheel
 %endif
 
 %if %{with ruby}
